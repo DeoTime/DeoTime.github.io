@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Dark mode switch styles */
+    .dark-mode-switch {
+      display: inline-block;
+      position: relative;
+      width: 60px;
+      height: 30px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      background-size: contain; /* Shows full image */
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    /* Light mode background: image of a sky with clouds */
+    body:not(.dark) .dark-mode-switch {
+      background: url('https://media.istockphoto.com/id/1545193103/vector/cartoon-flat-style-white-clouds-on-blue.jpg?s=612x612&w=0&k=20&c=4V39Etf6jxDZ_Gw9V2w9UzEgEw7iQLq5Qb-1GJhBiOY=') center center;
+    }
+    /* Dark mode background: image of a starry night */
+    body.dark .dark-mode-switch {
+      background: url('https://raw.githubusercontent.com/DeoTime/images.storage/refs/heads/main/background-starry-night-sky-stars-sky-night-silhouette-of-the-mountains-free-vector(1).jpg') center center;
+    }
+    .dark-mode-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .dark-mode-switch label {
+      position: absolute;
+      top: 3px;
+      left: 3px; /* default position in light mode */
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: left 0.3s ease, background 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    /* Icon and position based on dark mode */
+    body:not(.dark) .dark-mode-switch label::after {
+      content: "☀";
+      color: #f39c12;
+    }
+    body.dark .dark-mode-switch label::after {
+      content: "🌙";
+      color: #f1c40f;
+    }
+    body.dark .dark-mode-switch label {
+      left: 33px;
+      background-color: #333;
+    }
+    /* Static container for the toggle in the bottom right */
+    .dark-toggle-container {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 10000;
+    }
+    
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #f5f5f5;
+      color: #2c3e50;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    /* Dark mode styles */
+    body.dark {
+      background: #1e1e1e;
+      color: #ccc;
+    }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #2980b9;
+      color: white;
+      text-align: center;
+      padding: 15px 20px;
+      font-size: 1.5em;
+      z-index: 1000;
+    }
+    .wrapper {
+      display: flex;
+      margin-top: 70px;
+    }
+    /* Minimalist Sidebar Styles */
+    .sidebar {
+      width: 300px;
+      background: #fff;
+      color: #2c3e50;
+      min-height: 100vh;
+      padding: 20px;
+      border-right: 1px solid #e0e0e0;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark .sidebar {
+      background: #2c2c2c;
+      color: #ccc;
+      border-right: 1px solid #444;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      padding: 15px 10px;
+      width: 100%;
+      cursor: pointer;
+      background: none;
+      border-bottom: 1px solid #e0e0e0;
+      transition: background 0.2s ease;
+    }
+    .sidebar li:hover {
+      background: #f0f0f0;
+    }
+    body.dark .sidebar li:hover {
+      background: #3a3a3a;
+    }
+    .sidebar li.active {
+      background: #f0f0f0;
+      font-weight: 500;
+    }
+    body.dark .sidebar li.active {
+      background: #555;
+    }
+    .sidebar li.locked {
+      color: #999;
+      cursor: not-allowed;
+      opacity: 0.7;
+      background: none;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      flex: 1;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark .container {
+      background: #2c2c2c;
+      color: #ccc;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    #videoFrame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .quiz-section {
+      background: #f8f8f8;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #e0e0e0;
+    }
+    body.dark .quiz-section {
+      background: #444;
+      border: 1px solid #666;
+    }
+    #question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    #answerInput {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid #ccc;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+    #answerInput:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52,152,219,0.1);
+    }
+    button {
+      padding: 12px 25px;
+      background: #3498db;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    #score {
+      text-align: center;
+      font-size: 1.5em;
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f8f8;
+      border: 1px solid #e0e0e0;
+    }
+    body.dark #score {
+      background: #3a3a3a;
+      border: 1px solid #555;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      margin: 20px 0;
+    }
+    .progress {
+      height: 100%;
+      background: #3498db;
+      transition: width 0.3s ease;
+    }
+    @media (max-width: 900px) {
+      .wrapper {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .sidebar li {
+        padding: 10px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    DrippyTurtle Academy
+  </div>
+  <div class="wrapper">
+    <div class="sidebar">
+      <!-- Dynamic Sidebar Title -->
+      <h2 id="sidebarTitle">6 Units - 0% Completed</h2>
+      <ul>
+        <!-- Group 1 -->
+        <li onclick="loadVideo(0)" id="videoNav0">What is an exponent?</li>
+        <li onclick="loadVideo(1)" id="videoNav1">What is an exponent?</li>
+        <li onclick="loadVideo(2)" id="videoNav2">Multiplying Exponents!</li>
+        <li onclick="loadVideo(3)" id="videoNav3">Multiplying Exponents!</li>
+        <li onclick="loadVideo(4)" id="videoNav4">Dividing Exponents!</li>
+        <li onclick="loadVideo(5)" id="videoNav5">Dividing Exponents!</li>
+        <!-- Group 2 -->
+        <li onclick="loadVideo(6)" id="videoNav6">Try This!</li>
+        <!-- Group 3 -->
+        <li onclick="loadVideo(7)" id="videoNav7">Power of a Power!</li>
+        <li onclick="loadVideo(8)" id="videoNav8">Power of a Power!</li>
+        <li onclick="loadVideo(9)" id="videoNav9">Exponent of One and Exponent of Zero!</li>
+        <li onclick="loadVideo(10)" id="videoNav10">Exponent of One and Exponent of Zero!</li>
+        <li onclick="loadVideo(11)" id="videoNav11">Exponent of Negative Exponents!</li>
+        <li onclick="loadVideo(12)" id="videoNav12">Exponent of Negative Exponents!</li>
+        <!-- Group 4: Final Quiz -->
+        <li onclick="loadVideo(13)" id="videoNav13">Additional Question</li>
+        <li onclick="loadVideo(14)" id="videoNav14">Final Quiz Q1</li>
+        <li onclick="loadVideo(15)" id="videoNav15">Final Quiz Q2</li>
+        <li onclick="loadVideo(16)" id="videoNav16">Final Quiz Q3</li>
+      </ul>
+    </div>
+    <div class="container">
+      <h1>✏️ Exponent Laws 📘</h1>
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="video-container">
+        <iframe id="videoFrame" allowfullscreen></iframe>
+      </div>
+      <!-- Quiz section: only shown for quiz videos -->
+      <div class="quiz-section">
+        <p id="question"></p>
+        <div class="input-group">
+          <input type="text" id="answerInput" placeholder="Type your answer here...">
+          <button onclick="checkAnswer()">Submit</button>
+        </div>
+      </div>
+      <!-- Controls for non-quiz videos -->
+      <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0;">
+        <button onclick="goToNextVideo()">Next</button>
+      </div>
+      <div id="score"></div>
+    </div>
+  </div>
+
+  <!-- Dark mode toggle as a static element in the bottom right -->
+  <div class="dark-toggle-container">
+    <div class="dark-mode-switch">
+      <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+      <label for="darkModeToggle"></label>
+    </div>
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    const videos = [
+      { id: 'intro1VideoID', isQuiz: false },
+      { id: 'dQw4w9WgXcQ', question: 'What is the answer for Video 1?', answer: 'robert', tries: 0, isQuiz: true },
+      { id: 'intro2VideoID', isQuiz: false },
+      { id: '9bZkp7q19f0', question: 'What is the answer for Video 2?', answer: 'te', tries: 0, isQuiz: true },
+      { id: 'intro3VideoID', isQuiz: false },
+      { id: '3JZ_D3ELwOQ', question: 'What is the answer for Video 3?', answer: 'answer3', tries: 0, isQuiz: true },
+      { id: 'questionOnlyVideoID', question: 'Answer this standalone question.', answer: 'standalone', tries: 0, isQuiz: true },
+      { id: 'intro4VideoID', isQuiz: false },
+      { id: 'VIDEO4_ID', question: 'What is the answer for Video 4?', answer: 'answer4', tries: 0, isQuiz: true },
+      { id: 'intro5VideoID', isQuiz: false },
+      { id: 'VIDEO5_ID', question: 'What is the answer for Video 5?', answer: 'answer5', tries: 0, isQuiz: true },
+      { id: 'intro6VideoID', isQuiz: false },
+      { id: 'VIDEO6_ID', question: 'What is the answer for Video 6?', answer: 'answer6', tries: 0, isQuiz: true },
+      { id: 'additionalQuestionVideoID', question: 'Additional Question: What is 5 + 3?', answer: '8', tries: 0, isQuiz: true },
+      { id: 'FINALQ1_ID', question: 'Final Quiz Question 1: What is 2^3?', answer: '8', tries: 0, isQuiz: true },
+      { id: 'FINALQ2_ID', question: 'Final Quiz Question 2: Simplify 2^4 * 2^3.', answer: '128', tries: 0, isQuiz: true },
+      { id: 'FINALQ3_ID', question: 'Final Quiz Question 3: What is (2^3)^2?', answer: '64', tries: 0, isQuiz: true }
+    ];
+
+    let maxUnlocked = 1;
+    let currentVideo = 0;
+    let totalTries = 0;
+    let startTime = Date.now();
+    let totalTime = 0;
+
+    function initialize() {
+      updateProgress();
+      document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videos[currentVideo].id}?rel=0&modestbranding=1`;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('answerInput').blur();
+      if(videos[currentVideo].isQuiz) {
+        document.querySelector('.quiz-section').style.display = 'block';
+        document.getElementById('nonQuizSection').style.display = 'none';
+        document.getElementById('question').textContent = videos[currentVideo].question;
+        document.getElementById('answerInput').focus();
+      } else {
+        document.querySelector('.quiz-section').style.display = 'none';
+        document.getElementById('nonQuizSection').style.display = 'block';
+      }
+      updateSidebarActive();
+    }
+
+    function checkAnswer() {
+      if (!videos[currentVideo].isQuiz) return;
+      const userAnswer = document.getElementById('answerInput').value.toLowerCase().trim();
+      const correctAnswer = videos[currentVideo].answer;
+      videos[currentVideo].tries++;
+      if(userAnswer === correctAnswer) {
+        totalTries += videos[currentVideo].tries;
+        totalTime += (Date.now() - startTime);
+        if(currentVideo < videos.length - 1) {
+          maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
+        }
+        setTimeout(() => { goToNextVideo(); }, 1500);
+      } else {
+        document.getElementById('answerInput').value = '';
+        document.getElementById('answerInput').focus();
+      }
+    }
+
+    function goToNextVideo() {
+      if (currentVideo < videos.length - 1) {
+        currentVideo++;
+        startTime = Date.now();
+        if(videos[currentVideo].isQuiz) {
+          videos[currentVideo].tries = 0;
+        }
+        maxUnlocked = Math.max(maxUnlocked, currentVideo);
+        initialize();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+      const totalSeconds = Math.floor(totalTime / 1000);
+      const score = calculateScore(totalSeconds, totalTries);
+      document.querySelector('.quiz-section').style.display = 'none';
+      document.getElementById('nonQuizSection').style.display = 'none';
+      document.getElementById('score').innerHTML = `
+        <h2>Quiz Complete! 🏆</h2>
+        <p>⏱ Time: ${totalSeconds} seconds</p>
+        <p>🎯 Total Attempts: ${totalTries}</p>
+        <p style="font-size: 1.8em; margin-top: 15px;">⭐ Final Score: ${score}</p>
+      `;
+    }
+
+    function calculateScore(time, attempts) {
+      const timePenalty = time * 5;
+      const attemptPenalty = attempts * 50;
+      return Math.max(0, 1000 - timePenalty - attemptPenalty);
+    }
+
+    function updateProgress() {
+      const progress = (currentVideo / (videos.length - 1)) * 100;
+      document.getElementById('progress').style.width = `${progress}%`;
+      document.getElementById('sidebarTitle').textContent = `6 Units - ${Math.floor(progress)}% Completed`;
+    }
+
+    function loadVideo(index) {
+      if(index > maxUnlocked) {
+        alert('This video is locked. Please complete the previous section first.');
+        return;
+      }
+      currentVideo = index;
+      startTime = Date.now();
+      if(videos[currentVideo].isQuiz) {
+        videos[currentVideo].tries = 0;
+      }
+      document.getElementById('score').innerHTML = '';
+      initialize();
+    }
+
+    function updateSidebarActive() {
+      const items = document.querySelectorAll('.sidebar li');
+      items.forEach((item, index) => {
+        item.classList.toggle('active', index === currentVideo);
+        if(index > maxUnlocked)  {
+          item.classList.add('locked');
+          item.onclick = () => { alert('This video is locked. Please complete the previous section first.'); };
+        } else {
+          item.classList.remove('locked');
+          item.onclick = () => loadVideo(index);
+        }
+      });
+    }
+
+    document.getElementById('answerInput').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') { event.preventDefault(); checkAnswer(); }
+    });
+
+    initialize();
+  </script>
+</body>
+</html>
