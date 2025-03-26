@@ -243,6 +243,10 @@
       background: #3a3a3a;
       border: 1px solid #555;
     }
+    /* Hide empty score box */
+    #score:empty {
+      display: none;
+    }
     .progress-bar {
       width: 100%;
       height: 8px;
@@ -279,8 +283,8 @@
 </head>
 <body>
   <div class="header">
-    DrippyTurtle Academy
-  </div>
+    <img src="images/icon.png" alt="Turtle Icon" style="height:30px; vertical-align:middle; margin-right:10px;"> DrippyTurtle Academy
+    </div>
   <div class="wrapper">
     <div class="sidebar">
       <!-- Dynamic Sidebar Title -->
@@ -324,6 +328,8 @@
           <input type="text" id="answerInput" placeholder="Type your answer here...">
           <button onclick="checkAnswer()">Submit</button>
         </div>
+        <!-- Feedback box -->
+        <div id="feedback" style="margin-top:10px; font-size:14px;"></div>
       </div>
       <!-- Controls for non-quiz videos -->
       <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0;">
@@ -340,7 +346,6 @@
       <label for="darkModeToggle"></label>
     </div>
   </div>
-
   <script>
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
@@ -377,6 +382,7 @@
       document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videos[currentVideo].id}?rel=0&modestbranding=1`;
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').blur();
+      document.getElementById('feedback').textContent = '';
       if(videos[currentVideo].isQuiz) {
         document.querySelector('.quiz-section').style.display = 'block';
         document.getElementById('nonQuizSection').style.display = 'none';
@@ -393,15 +399,23 @@
       if (!videos[currentVideo].isQuiz) return;
       const userAnswer = document.getElementById('answerInput').value.toLowerCase().trim();
       const correctAnswer = videos[currentVideo].answer;
+      const feedback = document.getElementById('feedback');
       videos[currentVideo].tries++;
       if(userAnswer === correctAnswer) {
+        feedback.textContent = "Correct!";
+        feedback.style.color = "green";
         totalTries += videos[currentVideo].tries;
         totalTime += (Date.now() - startTime);
         if(currentVideo < videos.length - 1) {
           maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
         }
-        setTimeout(() => { goToNextVideo(); }, 1500);
+        setTimeout(() => {
+          feedback.textContent = "";
+          goToNextVideo();
+        }, 1500);
       } else {
+        feedback.textContent = "Incorrect, try again.";
+        feedback.style.color = "red";
         document.getElementById('answerInput').value = '';
         document.getElementById('answerInput').focus();
       }
@@ -463,8 +477,22 @@
     function updateSidebarActive() {
       const items = document.querySelectorAll('.sidebar li');
       items.forEach((item, index) => {
+        // Store the original text if not already stored
+        if (!item.dataset.title) {
+          item.dataset.title = item.textContent;
+        }
+        const original = item.dataset.title;
+        let icon = "";
+        // For passed quiz videos (index less than currentVideo) update text with an icon:
+        if (index < currentVideo && videos[index] && videos[index].isQuiz) {
+          icon = videos[index].tries === 1 ? " ⭐" : " ✔";
+        }
+        // Update the sidebar item text with the original title plus the icon (if applicable)
+        item.textContent = original + icon;
+        // Mark the active item
         item.classList.toggle('active', index === currentVideo);
-        if(index > maxUnlocked)  {
+        // Lock items that haven't been unlocked yet
+        if (index > maxUnlocked)  {
           item.classList.add('locked');
           item.onclick = () => { alert('This video is locked. Please complete the previous section first.'); };
         } else {
@@ -475,7 +503,10 @@
     }
 
     document.getElementById('answerInput').addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') { event.preventDefault(); checkAnswer(); }
+      if (event.key === 'Enter') { 
+        event.preventDefault(); 
+        checkAnswer(); 
+      }
     });
 
     initialize();
