@@ -13,7 +13,7 @@
       border-radius: 15px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      background-size: contain; /* Shows full image */
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
     }
@@ -72,12 +72,13 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
+    }
     body {
       background: #f5f5f5;
       color: #2c3e50;
       min-height: 100vh;
       transition: background 0.3s ease, color 0.3s ease;
-    }}
+    }
     /* Dark mode styles */
     body.dark {
       background: #1e1e1e;
@@ -97,18 +98,22 @@
     }
     .wrapper {
       display: flex;
-      margin-top: 70px;
+      margin-top: 70px; /* Leave space for the fixed header */
+      justify-content: center; /* Centers the container when sidebar is not offset */
     }
+    /* Fixed sidebar on the left */
     .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      bottom: 0;
       width: 300px;
       background: #fff;
       color: #2c3e50;
       padding: 20px;
       border-right: 1px solid #e0e0e0;
       transition: background 0.3s ease, color 0.3s ease;
-      /* Make the sidebar a separate scrollable entity */
       overflow-y: auto;
-      height: calc(100vh - 70px); /* Adjust the height if your header height is different */
     }
     body.dark .sidebar {
       background: #2c2c2c;
@@ -153,15 +158,15 @@
       opacity: 0.7;
       background: none;
     }
+    /* Centered container for the main content */
     .container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    flex: 1;
-    transition: background 0.3s ease, color 0.3s ease;
-
+      max-width: 800px;
+      margin: 40px auto; /* centers the container */
+      background: white;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      flex: 1;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     body.dark .container {
       background: #2c2c2c;
@@ -169,7 +174,7 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
     h1 {
-      text-align: center;
+      text-align: center; /* "Exponent Laws" will remain centered */
       margin-bottom: 30px;
       font-weight: 500;
     }
@@ -179,6 +184,7 @@
       height: 0;
       overflow: hidden;
       background: #000;
+      margin: 0 auto; /* centers the video container within the container */
     }
     #videoFrame {
       position: absolute;
@@ -263,10 +269,13 @@
       .wrapper {
         flex-direction: column;
       }
+      /* In mobile view, let the sidebar be relative */
       .sidebar {
+        position: relative;
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #e0e0e0;
+        height: auto;
       }
       .sidebar li {
         padding: 10px;
@@ -275,17 +284,53 @@
       .container {
         margin: 20px;
         padding: 20px;
+        margin-left: 0;
       }
       h1 {
         font-size: 1.5em;
       }
+    }
+    /* About Us Popup - Wider version */
+    #aboutPopup {
+      display: none;
+      position: absolute;
+      top: 70px;
+      right: 10px;
+      transform: translateX(0);
+      background: white;
+      padding: 20px;
+      max-width: 600px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1001;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
   <div class="header">
     <img src="images/icon.png" alt="Turtle Icon" style="height:30px; vertical-align:middle; margin-right:10px;"> DrippyTurtle Academy
+    <span id="aboutUsLink" style="cursor:pointer; float:right; margin-left:20px; color:white; text-decoration:underline; font-size:0.85em;">About Us</span>
+  </div>
+  <!-- About Us Popup -->
+  <div id="aboutPopup">
+    <h2 style="margin-bottom:15px;">About Us</h2>
+    <p style="margin-bottom:15px;">Contributors:</p>
+    <div style="display: flex; flex-direction: column; gap:15px; margin-bottom:15px;">
+      <div style="display: flex; align-items: center; gap:15px;">
+        <img src="images/boda.png" alt="Contributor 1" style="height:40px; width:40px; border-radius:50%;">
+        <span style="padding-right:20px;">Alvin Ip</span>
+      </div>
+      <div style="display: flex; align-items: center; gap:15px;">
+        <img src="images/drippyturtle.png" alt="Contributor 2" style="height:40px; width:40px; border-radius:50%;">
+        <span style="padding-right:20px;">Jonathan He</span>
+      </div>
+      <div style="display: flex; align-items: center; gap:15px;">
+        <img src="images/snom.png" alt="Contributor 3" style="height:40px; width:40px; border-radius:50%;">
+        <span style="padding-right:20px;">Robert Wang</span>
+      </div>
     </div>
+    <button onclick="closeAboutPopup()" style="margin-top:15px;">Close</button>
+  </div>
   <div class="wrapper">
     <div class="sidebar">
       <!-- Dynamic Sidebar Title -->
@@ -315,7 +360,7 @@
       </ul>
     </div>
     <div class="container">
-      <h1>✏️ Exponent Laws 📘</h1>
+      <h1> Exponent Laws </h1>
       <div class="progress-bar">
         <div class="progress" id="progress"></div>
       </div>
@@ -326,14 +371,14 @@
       <div class="quiz-section">
         <p id="question"></p>
         <div class="input-group">
-          <input type="text" id="answerInput" placeholder="Type your answer here...">
+          <input type="text" id="answerInput" placeholder="Enter your answer here...">
           <button onclick="checkAnswer()">Submit</button>
         </div>
         <!-- Feedback box -->
         <div id="feedback" style="margin-top:10px; font-size:14px;"></div>
       </div>
       <!-- Controls for non-quiz videos -->
-      <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0;">
+      <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0 0 0;">
         <button onclick="goToNextVideo()">Next</button>
       </div>
       <div id="score"></div>
@@ -347,10 +392,31 @@
       <label for="darkModeToggle"></label>
     </div>
   </div>
+
   <script>
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
     }
+
+    function closeAboutPopup() {
+      document.getElementById('aboutPopup').style.display = 'none';
+    }
+
+    document.getElementById('aboutUsLink').addEventListener('click', function(event) {
+      var popup = document.getElementById('aboutPopup');
+      // Prevent event from bubbling up so document click doesn't immediately close the popup
+      event.stopPropagation();
+      popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
+    });
+
+    // Clicking anywhere outside the About Us popup closes it.
+    document.addEventListener('click', function(event) {
+      var popup = document.getElementById('aboutPopup');
+      var aboutUsLink = document.getElementById('aboutUsLink');
+      if (popup.style.display === 'block' && !popup.contains(event.target) && event.target !== aboutUsLink) {
+        popup.style.display = 'none';
+      }
+    });
 
     const videos = [
       { id: 'intro1VideoID', isQuiz: false },
@@ -379,12 +445,18 @@
     let totalTime = 0;
 
     function initialize() {
-      updateProgress();
+      // Update progress only if not on the first page
+      if (currentVideo > 0) {
+        updateProgress();
+      } else {
+        document.getElementById('progress').style.width = '0%';
+        document.getElementById('sidebarTitle').textContent = '6 Units - 0% Completed';
+      }
       document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videos[currentVideo].id}?rel=0&modestbranding=1`;
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').blur();
       document.getElementById('feedback').textContent = '';
-      if(videos[currentVideo].isQuiz) {
+      if (videos[currentVideo].isQuiz) {
         document.querySelector('.quiz-section').style.display = 'block';
         document.getElementById('nonQuizSection').style.display = 'none';
         document.getElementById('question').textContent = videos[currentVideo].question;
@@ -456,7 +528,7 @@
     }
 
     function updateProgress() {
-      const progress = (currentVideo / (videos.length - 1)) * 100;
+      const progress = (maxUnlocked / (videos.length - 1)) * 100;
       document.getElementById('progress').style.width = `${progress}%`;
       document.getElementById('sidebarTitle').textContent = `6 Units - ${Math.floor(progress)}% Completed`;
     }
@@ -478,21 +550,16 @@
     function updateSidebarActive() {
       const items = document.querySelectorAll('.sidebar li');
       items.forEach((item, index) => {
-        // Store the original text if not already stored
         if (!item.dataset.title) {
           item.dataset.title = item.textContent;
         }
         const original = item.dataset.title;
         let icon = "";
-        // For passed quiz videos (index less than currentVideo) update text with an icon:
         if (index < currentVideo && videos[index] && videos[index].isQuiz) {
           icon = videos[index].tries === 1 ? " ⭐" : " ✔";
         }
-        // Update the sidebar item text with the original title plus the icon (if applicable)
         item.textContent = original + icon;
-        // Mark the active item
         item.classList.toggle('active', index === currentVideo);
-        // Lock items that haven't been unlocked yet
         if (index > maxUnlocked)  {
           item.classList.add('locked');
           item.onclick = () => { alert('This video is locked. Please complete the previous section first.'); };
