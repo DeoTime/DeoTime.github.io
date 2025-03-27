@@ -3,6 +3,7 @@
 <head>
   <title>Math Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/tab-icon.png">
   <style>
     /* Dark mode switch styles */
     .dark-mode-switch {
@@ -325,59 +326,48 @@
     <img src="images/icon.png" alt="Turtle Icon" style="height:30px; vertical-align:middle; margin-right:10px;"> DrippyTurtle Academy
     <span id="aboutUsLink" style="cursor:pointer; float:right; margin-left:20px; color:white; text-decoration:underline; font-size:0.85em;">About Us</span>
   </div>
-  
-  <!-- About Us Popup -->
   <div id="aboutPopup">
     <h2 style="margin-bottom:15px;">About Us</h2>
     <p style="margin-bottom:15px;">Contributors:</p>
-    <div style="display: flex; flex-direction: column; gap:15px; margin-bottom:15px;">
-      <div style="display: flex; align-items: center; gap:15px;">
-        <img src="images/boda.png"  style="height:40px; width:40px; border-radius:50%;">
+    <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:15px;">
+      <div style="display:flex; align-items:center; gap:15px;">
+        <img src="images/boda.png" style="height:40px; width:40px; border-radius:50%;">
         <span style="padding-right:20px;">Alvin Ip</span>
       </div>
-      <div style="display: flex; align-items: center; gap:15px;">
-        <img src="images/drippyturtle.png"  style="height:40px; width:40px; border-radius:50%;">
+      <div style="display:flex; align-items:center; gap:15px;">
+        <img src="images/drippyturtle.png" style="height:40px; width:40px; border-radius:50%;">
         <span style="padding-right:20px;">Jonathan He</span>
       </div>
-      <div style="display: flex; align-items: center; gap:15px;">
-        <img src="images/snom.png"  style="height:40px; width:40px; border-radius:50%;">
+      <div style="display:flex; align-items:center; gap:15px;">
+        <img src="images/snom.png" style="height:40px; width:40px; border-radius:50%;">
         <span style="padding-right:20px;">Robert Wang</span>
       </div>
     </div>
     <button onclick="closeAboutPopup()" style="margin-top:15px;">Close</button>
   </div>
-  
-  <!-- New Quagsire Element -->
   <div id="quagsireContainer">
     <img id="quagsireImg" src="images/quagsire.png" alt="Quagsire">
     <div id="quagsireBubble">Keep going, you're doing great!</div>
   </div>
-  
   <div class="wrapper">
     <div class="sidebar">
       <h2 id="sidebarTitle">6 Units - 0% Completed</h2>
       <ul>
-        <li onclick="loadVideo(0)" id="videoNav0">What is an exponent?</li>
-        <li onclick="loadVideo(1)" id="videoNav1">What is an exponent?</li>
-        <li onclick="loadVideo(2)" id="videoNav2">Multiplying Exponents!</li>
-        <li onclick="loadVideo(3)" id="videoNav3">Multiplying Exponents!</li>
-        <li onclick="loadVideo(4)" id="videoNav4">Dividing Exponents!</li>
-        <li onclick="loadVideo(5)" id="videoNav5">Dividing Exponents!</li>
-        <li onclick="loadVideo(6)" id="videoNav6">Try This!</li>
-        <li onclick="loadVideo(7)" id="videoNav7">Power of a Power!</li>
-        <li onclick="loadVideo(8)" id="videoNav8">Power of a Power!</li>
-        <li onclick="loadVideo(9)" id="videoNav9">Exponent of One and Exponent of Zero!</li>
-        <li onclick="loadVideo(10)" id="videoNav10">Exponent of One and Exponent of Zero!</li>
-        <li onclick="loadVideo(11)" id="videoNav11">Exponent of Negative Exponents!</li>
-        <li onclick="loadVideo(12)" id="videoNav12">Exponent of Negative Exponents!</li>
-        <li onclick="loadVideo(13)" id="videoNav13">Additional Question</li>
-        <li onclick="loadVideo(14)" id="videoNav14">Final Quiz Q1</li>
-        <li onclick="loadVideo(15)" id="videoNav15">Final Quiz Q2</li>
-        <li onclick="loadVideo(16)" id="videoNav16">Final Quiz Q3</li>
+        <li onclick="loadVideo(sidebarMapping[0])" id="sidebarItem0">What is an exponent?</li>
+        <li onclick="loadVideo(sidebarMapping[1])" id="sidebarItem1">Multiplying Exponents!</li>
+        <li onclick="loadVideo(sidebarMapping[2])" id="sidebarItem2">Dividing Exponents!</li>
+        <li onclick="loadVideo(sidebarMapping[3])" id="sidebarItem3">Try This!</li>
+        <li onclick="loadVideo(sidebarMapping[4])" id="sidebarItem4">Power of a Power!</li>
+        <li onclick="loadVideo(sidebarMapping[5])" id="sidebarItem5">Exponent of One and Exponent of Zero!</li>
+        <li onclick="loadVideo(sidebarMapping[6])" id="sidebarItem6">Exponent of Negative Exponents!</li>
+        <li onclick="loadVideo(sidebarMapping[7])" id="sidebarItem7">Additional Question</li>
+        <li onclick="loadVideo(sidebarMapping[8])" id="sidebarItem8">Final Quiz Q1</li>
+        <li onclick="loadVideo(sidebarMapping[9])" id="sidebarItem9">Final Quiz Q2</li>
+        <li onclick="loadVideo(sidebarMapping[10])" id="sidebarItem10">Final Quiz Q3</li>
       </ul>
     </div>
     <div class="container">
-      <h1> Exponent Laws </h1>
+      <h1>Exponent Laws</h1>
       <div class="progress-bar">
         <div class="progress" id="progress"></div>
       </div>
@@ -395,32 +385,31 @@
       <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0 0 0;">
         <button onclick="goToNextVideo()">Next</button>
       </div>
+      <div id="navButtons" style="text-align:center; margin:20px 0;">
+        <button onclick="backButton()"><<</button>
+        <button onclick="forwardButton()">>></button>
+      </div>
       <div id="score"></div>
     </div>
   </div>
-  
   <div class="dark-toggle-container">
     <div class="dark-mode-switch">
       <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
       <label for="darkModeToggle"></label>
     </div>
   </div>
-  
   <script>
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
     }
-    
     function closeAboutPopup() {
       document.getElementById('aboutPopup').style.display = 'none';
     }
-    
     document.getElementById('aboutUsLink').addEventListener('click', function(event) {
       var popup = document.getElementById('aboutPopup');
       event.stopPropagation();
       popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
     });
-    
     document.addEventListener('click', function(event) {
       var popup = document.getElementById('aboutPopup');
       var aboutUsLink = document.getElementById('aboutUsLink');
@@ -428,8 +417,6 @@
         popup.style.display = 'none';
       }
     });
-    
-    // Random messages for Quagsire
     const quagsireMessages = [
       "Keep going, you're doing great!",
       "You got this!",
@@ -437,25 +424,19 @@
       "Almost there, stay strong!",
       "Quack"
     ];
-    
-    // Quagsire click event: pop him up to reveal 60% then back down while showing a random message
     document.getElementById('quagsireContainer').addEventListener('click', function(event) {
       var container = document.getElementById('quagsireContainer');
       var bubble = document.getElementById('quagsireBubble');
-      // Choose a random message
       var msg = quagsireMessages[Math.floor(Math.random() * quagsireMessages.length)];
       bubble.textContent = msg;
-      // Pop up: change bottom to -120px (revealing 60% of 300px)
       container.style.bottom = "-120px";
       bubble.style.display = 'block';
-      // After 2 seconds, pop back down
       setTimeout(function(){
         container.style.bottom = "-240px";
         bubble.style.display = 'none';
       }, 2000);
       event.stopPropagation();
     });
-    
     const videos = [
       { id: 'intro1VideoID', isQuiz: false },
       { id: 'dQw4w9WgXcQ', question: 'What is the answer for Video 1?', answer: 'robert', tries: 0, isQuiz: true },
@@ -475,13 +456,14 @@
       { id: 'FINALQ2_ID', question: 'Final Quiz Question 2: Simplify 2^4 * 2^3.', answer: '128', tries: 0, isQuiz: true },
       { id: 'FINALQ3_ID', question: 'Final Quiz Question 3: What is (2^3)^2?', answer: '64', tries: 0, isQuiz: true }
     ];
-    
+    // Sidebar mapping: for each element, map to the corresponding video index.
+    // Pairs: [0,1] -> 1; [2,3] -> 3; [4,5] -> 5; then independent: 6; then [7,8] -> 8; [9,10] -> 10; [11,12] -> 12; then independent: 13, 14, 15, 16.
+    const sidebarMapping = [1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16];
     let maxUnlocked = 1;
     let currentVideo = 0;
     let totalTries = 0;
     let startTime = Date.now();
     let totalTime = 0;
-    
     function initialize() {
       if (currentVideo > 0) {
         updateProgress();
@@ -504,19 +486,18 @@
       }
       updateSidebarActive();
     }
-    
     function checkAnswer() {
       if (!videos[currentVideo].isQuiz) return;
       const userAnswer = document.getElementById('answerInput').value.toLowerCase().trim();
       const correctAnswer = videos[currentVideo].answer;
       const feedback = document.getElementById('feedback');
       videos[currentVideo].tries++;
-      if(userAnswer === correctAnswer) {
+      if (userAnswer === correctAnswer) {
         feedback.textContent = "Correct!";
         feedback.style.color = "green";
         totalTries += videos[currentVideo].tries;
         totalTime += (Date.now() - startTime);
-        if(currentVideo < videos.length - 1) {
+        if (currentVideo < videos.length - 1) {
           maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
         }
         setTimeout(() => {
@@ -530,12 +511,11 @@
         document.getElementById('answerInput').focus();
       }
     }
-    
     function goToNextVideo() {
       if (currentVideo < videos.length - 1) {
         currentVideo++;
         startTime = Date.now();
-        if(videos[currentVideo].isQuiz) {
+        if (videos[currentVideo].isQuiz) {
           videos[currentVideo].tries = 0;
         }
         maxUnlocked = Math.max(maxUnlocked, currentVideo);
@@ -544,76 +524,86 @@
         endQuiz();
       }
     }
-    
     function endQuiz() {
       const totalSeconds = Math.floor(totalTime / 1000);
       const score = calculateScore(totalSeconds, totalTries);
       document.querySelector('.quiz-section').style.display = 'none';
       document.getElementById('nonQuizSection').style.display = 'none';
-      document.getElementById('score').innerHTML = `
-        <h2>Quiz Complete! 🏆</h2>
+      document.getElementById('score').innerHTML = `<h2>Quiz Complete! 🏆</h2>
         <p>⏱ Time: ${totalSeconds} seconds</p>
         <p>🎯 Total Attempts: ${totalTries}</p>
-        <p style="font-size: 1.8em; margin-top: 15px;">⭐ Final Score: ${score}</p>
-      `;
+        <p style="font-size:1.8em; margin-top:15px;">⭐ Final Score: ${score}</p>`;
     }
-    
     function calculateScore(time, attempts) {
       const timePenalty = time * 5;
       const attemptPenalty = attempts * 50;
       return Math.max(0, 1000 - timePenalty - attemptPenalty);
     }
-    
     function updateProgress() {
       const progress = (maxUnlocked / (videos.length - 1)) * 100;
       document.getElementById('progress').style.width = `${progress}%`;
       document.getElementById('sidebarTitle').textContent = `6 Units - ${Math.floor(progress)}% Completed`;
     }
-    
     function loadVideo(index) {
-      if(index > maxUnlocked) {
+      if (index > maxUnlocked) {
         alert('This video is locked. Please complete the previous section first.');
         return;
       }
       currentVideo = index;
       startTime = Date.now();
-      if(videos[currentVideo].isQuiz) {
+      if (videos[currentVideo].isQuiz) {
         videos[currentVideo].tries = 0;
       }
       document.getElementById('score').innerHTML = '';
       initialize();
     }
-    
     function updateSidebarActive() {
       const items = document.querySelectorAll('.sidebar li');
-      items.forEach((item, index) => {
-        if (!item.dataset.title) {
-          item.dataset.title = item.textContent;
-        }
+      items.forEach((item, i) => {
+        if (!item.dataset.title) { item.dataset.title = item.textContent; }
         const original = item.dataset.title;
         let icon = "";
-        if (index < currentVideo && videos[index] && videos[index].isQuiz) {
-          icon = videos[index].tries === 1 ? " ⭐" : " ✔";
+        const vidIndex = sidebarMapping[i];
+        if (vidIndex < currentVideo && videos[vidIndex] && videos[vidIndex].isQuiz) {
+          icon = videos[vidIndex].tries === 1 ? " ⭐" : " ✔";
         }
         item.textContent = original + icon;
-        item.classList.toggle('active', index === currentVideo);
-        if (index > maxUnlocked)  {
+        item.classList.toggle('active', vidIndex === currentVideo);
+        if (vidIndex > maxUnlocked) {
           item.classList.add('locked');
           item.onclick = () => { alert('This video is locked. Please complete the previous section first.'); };
         } else {
           item.classList.remove('locked');
-          item.onclick = () => loadVideo(index);
+          item.onclick = () => loadVideo(vidIndex);
         }
       });
     }
-    
+    function backButton() {
+      if (currentVideo > 0) {
+        currentVideo--;
+        startTime = Date.now();
+        if (videos[currentVideo].isQuiz) { videos[currentVideo].tries = 0; }
+        initialize();
+      } else {
+        alert("No previous video.");
+      }
+    }
+    function forwardButton() {
+      if (currentVideo < videos.length - 1 && currentVideo < maxUnlocked) {
+        currentVideo++;
+        startTime = Date.now();
+        if (videos[currentVideo].isQuiz) { videos[currentVideo].tries = 0; }
+        initialize();
+      } else {
+        alert("This video is locked. Please complete the previous section first.");
+      }
+    }
     document.getElementById('answerInput').addEventListener('keydown', function(event) {
       if (event.key === 'Enter') { 
         event.preventDefault(); 
         checkAnswer(); 
       }
     });
-    
     initialize();
   </script>
 </body>
