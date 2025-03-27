@@ -22,7 +22,7 @@
       background: url('https://media.istockphoto.com/id/1545193103/vector/cartoon-flat-style-white-clouds-on-blue.jpg?s=612x612&w=0&k=20&c=4V39Etf6jxDZ_Gw9V2w9UzEgEw7iQLq5Qb-1GJhBiOY=') center center;
     }
     body.dark .dark-mode-switch {
-      background: url('https://raw.githubusercontent.com/DeoTime/images.storage/refs/heads/main/background-starry-night-sky-stars-sky-night-silhouette-of-the-mountains-free-vector(1).jpg') center center;
+      background: url('https://w0.peakpx.com/wallpaper/249/688/HD-wallpaper-night-sky-black-stars.jpg') center center;
     }
     .dark-mode-switch input {
       opacity: 0;
@@ -283,7 +283,7 @@
     /* About Us Popup - Wider version */
     #aboutPopup {
       display: none;
-      position: absolute;
+      position: fixed;
       top: 70px;
       right: 10px;
       transform: translateX(0);
@@ -327,7 +327,6 @@
     <span id="aboutUsLink" style="cursor:pointer; float:right; margin-left:20px; color:white; text-decoration:underline; font-size:0.85em;">About Us</span>
   </div>
   <div id="aboutPopup">
-    <h2 style="margin-bottom:15px;">About Us</h2>
     <p style="margin-bottom:15px;">Contributors:</p>
     <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:15px;">
       <div style="display:flex; align-items:center; gap:15px;">
@@ -372,7 +371,7 @@
         <div class="progress" id="progress"></div>
       </div>
       <div class="video-container">
-        <iframe id="videoFrame" allowfullscreen></iframe>
+        <video id="videoFrame" controls style="width: 100%; height: auto;"></video>
       </div>
       <div class="quiz-section">
         <p id="question"></p>
@@ -406,13 +405,13 @@
       document.getElementById('aboutPopup').style.display = 'none';
     }
     document.getElementById('aboutUsLink').addEventListener('click', function(event) {
-      var popup = document.getElementById('aboutPopup');
+      const popup = document.getElementById('aboutPopup');
       event.stopPropagation();
       popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
     });
     document.addEventListener('click', function(event) {
-      var popup = document.getElementById('aboutPopup');
-      var aboutUsLink = document.getElementById('aboutUsLink');
+      const popup = document.getElementById('aboutPopup');
+      const aboutUsLink = document.getElementById('aboutUsLink');
       if (popup.style.display === 'block' && !popup.contains(event.target) && event.target !== aboutUsLink) {
         popup.style.display = 'none';
       }
@@ -425,40 +424,37 @@
       "Quack"
     ];
     document.getElementById('quagsireContainer').addEventListener('click', function(event) {
-      var container = document.getElementById('quagsireContainer');
-      var bubble = document.getElementById('quagsireBubble');
-      var msg = quagsireMessages[Math.floor(Math.random() * quagsireMessages.length)];
+      const container = document.getElementById('quagsireContainer');
+      const bubble = document.getElementById('quagsireBubble');
+      const msg = quagsireMessages[Math.floor(Math.random() * quagsireMessages.length)];
       bubble.textContent = msg;
       container.style.bottom = "-120px";
       bubble.style.display = 'block';
-      setTimeout(function(){
+      setTimeout(() => {
         container.style.bottom = "-240px";
         bubble.style.display = 'none';
       }, 2000);
       event.stopPropagation();
     });
     const videos = [
-      { id: 'intro1VideoID', isQuiz: false },
-      { id: 'dQw4w9WgXcQ', question: 'What is the answer for Video 1?', answer: 'robert', tries: 0, isQuiz: true },
-      { id: 'intro2VideoID', isQuiz: false },
-      { id: '9bZkp7q19f0', question: 'What is the answer for Video 2?', answer: 'te', tries: 0, isQuiz: true },
-      { id: 'intro3VideoID', isQuiz: false },
-      { id: '3JZ_D3ELwOQ', question: 'What is the answer for Video 3?', answer: 'answer3', tries: 0, isQuiz: true },
-      { id: 'questionOnlyVideoID', question: 'Answer this standalone question.', answer: 'standalone', tries: 0, isQuiz: true },
-      { id: 'intro4VideoID', isQuiz: false },
-      { id: 'VIDEO4_ID', question: 'What is the answer for Video 4?', answer: 'answer4', tries: 0, isQuiz: true },
-      { id: 'intro5VideoID', isQuiz: false },
-      { id: 'VIDEO5_ID', question: 'What is the answer for Video 5?', answer: 'answer5', tries: 0, isQuiz: true },
-      { id: 'intro6VideoID', isQuiz: false },
-      { id: 'VIDEO6_ID', question: 'What is the answer for Video 6?', answer: 'answer6', tries: 0, isQuiz: true },
-      { id: 'additionalQuestionVideoID', question: 'Additional Question: What is 5 + 3?', answer: '8', tries: 0, isQuiz: true },
+      { id: 'INTRO1', isQuiz: false },
+      { id: 'INTRO2', isQuiz: false },
+      { id: 'QUIZ2', question: 'What is the answer', answer: 'te', tries: 0, isQuiz: true },
+      { id: 'INTRO3', isQuiz: false },
+      { id: 'QUIZ3', question: 'What is the answer', answer: 'answer3', tries: 0, isQuiz: true },
+      { id: 'POP1', question: 'Answer this standalone question.', answer: 'standalone', tries: 0, isQuiz: true },
+      { id: 'INTRO4', isQuiz: false },
+      { id: 'QUIZ4', question: 'What is the answer?', answer: 'answer4', tries: 0, isQuiz: true },
+      { id: 'INTRO5', isQuiz: false },
+      { id: 'QUIZ5', question: 'What is the answer?', answer: 'answer5', tries: 0, isQuiz: true },
+      { id: 'INTRO6', isQuiz: false },
+      { id: 'QUIZ6', question: 'What is the answer?', answer: 'answer6', tries: 0, isQuiz: true },
+      { id: 'POP2', question: 'Additional Question: What is 5 + 3?', answer: '8', tries: 0, isQuiz: true },
       { id: 'FINALQ1_ID', question: 'Final Quiz Question 1: What is 2^3?', answer: '8', tries: 0, isQuiz: true },
       { id: 'FINALQ2_ID', question: 'Final Quiz Question 2: Simplify 2^4 * 2^3.', answer: '128', tries: 0, isQuiz: true },
       { id: 'FINALQ3_ID', question: 'Final Quiz Question 3: What is (2^3)^2?', answer: '64', tries: 0, isQuiz: true }
     ];
-    // Sidebar mapping: for each element, map to the corresponding video index.
-    // Pairs: [0,1] -> 1; [2,3] -> 3; [4,5] -> 5; then independent: 6; then [7,8] -> 8; [9,10] -> 10; [11,12] -> 12; then independent: 13, 14, 15, 16.
-    const sidebarMapping = [1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16];
+    const sidebarMapping = [0, 1, 4, 5, 7, 9, 11, 12, 13, 14, 15];
     let maxUnlocked = 1;
     let currentVideo = 0;
     let totalTries = 0;
@@ -471,7 +467,12 @@
         document.getElementById('progress').style.width = '0%';
         document.getElementById('sidebarTitle').textContent = '6 Units - 0% Completed';
       }
-      document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videos[currentVideo].id}?rel=0&modestbranding=1`;
+      const videoFrame = document.getElementById('videoFrame');
+      videoFrame.pause();
+      // Set the new source and reset time in one step
+      videoFrame.src = `videos/${videos[currentVideo].id}.mp4`;
+      videoFrame.currentTime = 0;
+      videoFrame.load();
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').blur();
       document.getElementById('feedback').textContent = '';
@@ -483,6 +484,10 @@
       } else {
         document.querySelector('.quiz-section').style.display = 'none';
         document.getElementById('nonQuizSection').style.display = 'block';
+        // Automatically unlock the next video on an INTRO page
+        if (currentVideo < videos.length - 1) {
+          maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
+        }
       }
       updateSidebarActive();
     }
@@ -513,12 +518,15 @@
     }
     function goToNextVideo() {
       if (currentVideo < videos.length - 1) {
+        if (currentVideo + 1 > maxUnlocked) {
+          alert("This video is locked. Please complete the previous section first.");
+          return;
+        }
         currentVideo++;
         startTime = Date.now();
         if (videos[currentVideo].isQuiz) {
           videos[currentVideo].tries = 0;
         }
-        maxUnlocked = Math.max(maxUnlocked, currentVideo);
         initialize();
       } else {
         endQuiz();
@@ -560,7 +568,9 @@
     function updateSidebarActive() {
       const items = document.querySelectorAll('.sidebar li');
       items.forEach((item, i) => {
-        if (!item.dataset.title) { item.dataset.title = item.textContent; }
+        if (!item.dataset.title) {
+          item.dataset.title = item.textContent;
+        }
         const original = item.dataset.title;
         let icon = "";
         const vidIndex = sidebarMapping[i];
@@ -571,7 +581,7 @@
         item.classList.toggle('active', vidIndex === currentVideo);
         if (vidIndex > maxUnlocked) {
           item.classList.add('locked');
-          item.onclick = () => { alert('This video is locked. Please complete the previous section first.'); };
+          item.onclick = () => alert('This video is locked. Please complete the previous section first.');
         } else {
           item.classList.remove('locked');
           item.onclick = () => loadVideo(vidIndex);
@@ -582,26 +592,21 @@
       if (currentVideo > 0) {
         currentVideo--;
         startTime = Date.now();
-        if (videos[currentVideo].isQuiz) { videos[currentVideo].tries = 0; }
+        if (videos[currentVideo].isQuiz) {
+          videos[currentVideo].tries = 0;
+        }
         initialize();
       } else {
         alert("No previous video.");
       }
     }
     function forwardButton() {
-      if (currentVideo < videos.length - 1 && currentVideo < maxUnlocked) {
-        currentVideo++;
-        startTime = Date.now();
-        if (videos[currentVideo].isQuiz) { videos[currentVideo].tries = 0; }
-        initialize();
-      } else {
-        alert("This video is locked. Please complete the previous section first.");
-      }
+      goToNextVideo();
     }
     document.getElementById('answerInput').addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') { 
-        event.preventDefault(); 
-        checkAnswer(); 
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        checkAnswer();
       }
     });
     initialize();
