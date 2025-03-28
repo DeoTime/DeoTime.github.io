@@ -607,7 +607,7 @@
       if (!score || isNaN(score) || score < 0) {
         console.error('Invalid score provided');
         return;
-      }
+      } 
   
       // Add CSRF protection if your backend supports it
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
