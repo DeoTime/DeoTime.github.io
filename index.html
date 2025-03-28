@@ -612,13 +612,9 @@
       // Add CSRF protection if your backend supports it
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
   
-      fetch('/api/postScore', {
+      fetch('https://your-vercel-project.vercel.app/api/scores', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           name: name.trim(), 
           score: Math.floor(score),
@@ -910,7 +906,7 @@
   
       // Update the URL to point to your leaderboard.json file on GitHub
       // Using a versioned URL is more secure than using 'main' branch
-      const url = 'https://raw.githubusercontent.com/DeoTime/images.storage/refs/heads/main/leaderboard.json';
+      const url = 'https://your-vercel-project.vercel.app/api/leaderboard?timeFrame=' + timeFrame;
   
       fetch(url, { 
         cache: 'no-store',  // Don't cache results to always get fresh data
