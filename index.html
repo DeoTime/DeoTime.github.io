@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Math Quiz</title>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://ui-avatars.com https://media.istockphoto.com https://w0.peakpx.com https://github.com data:; media-src https://raw.githubusercontent.com; connect-src 'self' https://raw.githubusercontent.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://ui-avatars.com https://media.istockphoto.com https://w0.peakpx.com https://github.com data:; media-src https://raw.githubusercontent.com; connect-src 'self' https://raw.githubusercontent.com https://leaderboard-backend-sigma.vercel.app/;">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/tab-icon.png">
   <style>
@@ -612,7 +612,7 @@
       // Add CSRF protection if your backend supports it
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
   
-      fetch('https://your-vercel-project.vercel.app/api/scores', {
+      fetch('https://leaderboard-backend-xyz123.vercel.app/api/scores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -906,7 +906,7 @@
   
       // Update the URL to point to your leaderboard.json file on GitHub
       // Using a versioned URL is more secure than using 'main' branch
-      const url = 'https://your-vercel-project.vercel.app/api/leaderboard?timeFrame=' + timeFrame;
+      const url = 'https://leaderboard-backend-sigma.vercel.app/api/leaderboard?timeFrame=' + timeFrame;
   
       fetch(url, { 
         cache: 'no-store',  // Don't cache results to always get fresh data
