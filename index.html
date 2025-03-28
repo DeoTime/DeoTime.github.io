@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Math Quiz</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://ui-avatars.com https://media.istockphoto.com https://w0.peakpx.com https://github.com data:; media-src https://raw.githubusercontent.com; connect-src 'self' https://raw.githubusercontent.com;">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/tab-icon.png">
   <style>
@@ -319,6 +320,154 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       white-space: nowrap;
     }
+    /* Leaderboard Styles */
+    .leaderboard-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      border-radius: 8px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark .leaderboard-container {
+      background: #2c2c2c;
+      color: #ccc;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    body.dark .leaderboard-header {
+      border-bottom: 1px solid #444;
+    }
+
+    .leaderboard-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .leaderboard-tab {
+      padding: 8px 16px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    body.dark .leaderboard-tab {
+      background: #3a3a3a;
+      color: #ccc;
+    }
+
+    .leaderboard-tab.active {
+      background: #3498db;
+      color: white;
+    }
+
+    .leaderboard-content {
+      position: relative;
+    }
+
+    #leaderboardTable {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #leaderboardTable th, 
+    #leaderboardTable td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    body.dark #leaderboardTable th,
+    body.dark #leaderboardTable td {
+      border-bottom: 1px solid #444;
+    }
+
+    #leaderboardTable th {
+      font-weight: 600;
+      color: #555;
+    }
+
+    body.dark #leaderboardTable th {
+      color: #aaa;
+    }
+
+    #leaderboardTable tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    body.dark #leaderboardTable tr:nth-child(even) {
+      background-color: #333;
+    }
+
+    .leaderboard-loading,
+    .leaderboard-error {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    body.dark .leaderboard-loading,
+    body.dark .leaderboard-error {
+      color: #aaa;
+    }
+
+    .leaderboard-error {
+      color: #e74c3c;
+      display: none;
+    }
+
+    .rank-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: white;
+      font-weight: 600;
+    }
+
+    .rank-1 {
+      background: #f1c40f;
+    }
+
+    .rank-2 {
+      background: #bdc3c7;
+    }
+
+    .rank-3 {
+      background: #cd7f32;
+    }
+
+    .rank-other {
+      background: #3498db;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -391,6 +540,30 @@
       <div id="score"></div>
     </div>
   </div>
+  <!-- Global Leaderboard Section -->
+  <div class="leaderboard-container">
+    <div class="leaderboard-header">
+      <h2>Global Leaderboard</h2>
+      <div class="leaderboard-tabs">
+        <button id="allTimeTab" class="leaderboard-tab active" onclick="switchLeaderboardTab('allTime')">All Time</button>
+        <button id="weeklyTab" class="leaderboard-tab" onclick="switchLeaderboardTab('weekly')">Weekly</button>
+      </div>
+    </div>
+    <div class="leaderboard-content">
+      <table id="leaderboardTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardList"></tbody>
+      </table>
+      <div id="leaderboardLoading" class="leaderboard-loading">Loading leaderboard data...</div>
+      <div id="leaderboardError" class="leaderboard-error"></div>
+    </div>
+  </div>
   <div class="dark-toggle-container">
     <div class="dark-mode-switch">
       <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
@@ -398,8 +571,78 @@
     </div>
   </div>
   <script>
+    // Load progress from localStorage if it exists.
+    function loadProgress() {
+      const stored = localStorage.getItem('quizProgress');
+      if (stored) {
+        const progress = JSON.parse(stored);
+        maxUnlocked = progress.maxUnlocked || 1;
+        currentVideo = progress.currentVideo || 0;
+        totalTries = progress.totalTries || 0;
+        totalTime = progress.totalTime || 0;
+      }
+    }
+  
+    // Save current progress to localStorage.
+    function saveProgress() {
+      const progress = {
+        maxUnlocked,
+        currentVideo,
+        totalTries,
+        totalTime
+      };
+      localStorage.setItem('quizProgress', JSON.stringify(progress));
+    }
+  
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
+    }
+    function submitScore(name, score) {
+      // Validate inputs
+      if (!name || typeof name !== 'string' || name.length > 50) {
+        console.error('Invalid name provided');
+        return;
+      }
+  
+      if (!score || isNaN(score) || score < 0) {
+        console.error('Invalid score provided');
+        return;
+      }
+  
+      // Add CSRF protection if your backend supports it
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  
+      fetch('/api/postScore', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
+        },
+        body: JSON.stringify({ 
+          name: name.trim(), 
+          score: Math.floor(score),
+          timestamp: new Date().toISOString()
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            console.log('Score submitted successfully');
+            // Reload the leaderboard to show the updated scores
+            loadLeaderboard();
+          } else {
+            console.error('Error submitting score:', data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
     }
     function closeAboutPopup() {
       document.getElementById('aboutPopup').style.display = 'none';
@@ -460,6 +703,9 @@
     let totalTries = 0;
     let startTime = Date.now();
     let totalTime = 0;
+  
+    loadProgress();
+  
     function initialize() {
       if (currentVideo > 0) {
         updateProgress();
@@ -469,10 +715,13 @@
       }
       const videoFrame = document.getElementById('videoFrame');
       videoFrame.pause();
-      // Set the new source and reset time in one step
-      videoFrame.src = `videos/${videos[currentVideo].id}.mp4`;
+      // Use raw.githubusercontent.com links for the videos.
+      videoFrame.src = `https://raw.githubusercontent.com/DeoTime/images.storage/main/${videos[currentVideo].id}.mp4`;
       videoFrame.currentTime = 0;
       videoFrame.load();
+      videoFrame.play().catch((error) => {
+        console.log("Auto-play prevented:", error);
+      });
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').blur();
       document.getElementById('feedback').textContent = '';
@@ -484,12 +733,12 @@
       } else {
         document.querySelector('.quiz-section').style.display = 'none';
         document.getElementById('nonQuizSection').style.display = 'block';
-        // Automatically unlock the next video on an INTRO page
         if (currentVideo < videos.length - 1) {
           maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
         }
       }
       updateSidebarActive();
+      saveProgress(); // Save progress after initialization
     }
     function checkAnswer() {
       if (!videos[currentVideo].isQuiz) return;
@@ -515,6 +764,7 @@
         document.getElementById('answerInput').value = '';
         document.getElementById('answerInput').focus();
       }
+      saveProgress(); // Save progress after checkAnswer
     }
     function goToNextVideo() {
       if (currentVideo < videos.length - 1) {
@@ -540,7 +790,31 @@
       document.getElementById('score').innerHTML = `<h2>Quiz Complete! 🏆</h2>
         <p>⏱ Time: ${totalSeconds} seconds</p>
         <p>🎯 Total Attempts: ${totalTries}</p>
-        <p style="font-size:1.8em; margin-top:15px;">⭐ Final Score: ${score}</p>`;
+        <p style="font-size:1.8em; margin-top:15px;">⭐ Final Score: ${score}</p>
+        <div style="margin-top:20px;">
+          <input type="text" id="playerNameInput" placeholder="Enter your name" style="padding:10px; margin-right:10px;">
+          <button onclick="submitPlayerScore()">Submit to Leaderboard</button>
+        </div>`;
+      saveProgress();
+    }
+
+    // Add this new function to handle score submission
+    function submitPlayerScore() {
+      const playerName = document.getElementById('playerNameInput').value.trim();
+      if (!playerName) {
+        alert('Please enter your name to submit your score');
+        return;
+      }
+  
+      const totalSeconds = Math.floor(totalTime / 1000);
+      const score = calculateScore(totalSeconds, totalTries);
+  
+      submitScore(playerName, score);
+  
+      // Disable the input and button after submission
+      document.getElementById('playerNameInput').disabled = true;
+      document.getElementById('playerNameInput').nextElementSibling.disabled = true;
+      document.getElementById('playerNameInput').nextElementSibling.textContent = 'Score Submitted!';
     }
     function calculateScore(time, attempts) {
       const timePenalty = time * 5;
@@ -564,6 +838,7 @@
       }
       document.getElementById('score').innerHTML = '';
       initialize();
+      saveProgress();
     }
     function updateSidebarActive() {
       const items = document.querySelectorAll('.sidebar li');
@@ -596,6 +871,7 @@
           videos[currentVideo].tries = 0;
         }
         initialize();
+        saveProgress();
       } else {
         alert("No previous video.");
       }
@@ -609,7 +885,146 @@
         checkAnswer();
       }
     });
+    document.addEventListener('keydown', function(event) {
+      if (document.activeElement.id !== 'answerInput') {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          backButton();
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          forwardButton();
+        }
+      }
+    });
+  
+    // Global Leaderboard: Load leaderboard data with improved security and error handling
+    function loadLeaderboard(timeFrame = 'allTime') {
+      const leaderboardList = document.getElementById('leaderboardList');
+      const loadingElement = document.getElementById('leaderboardLoading');
+      const errorElement = document.getElementById('leaderboardError');
+  
+      // Show loading state
+      leaderboardList.innerHTML = '';
+      loadingElement.style.display = 'block';
+      errorElement.style.display = 'none';
+  
+      // Update the URL to point to your leaderboard.json file on GitHub
+      // Using a versioned URL is more secure than using 'main' branch
+      const url = 'https://raw.githubusercontent.com/DeoTime/images.storage/refs/heads/main/leaderboard.json';
+  
+      fetch(url, { 
+        cache: 'no-store',  // Don't cache results to always get fresh data
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network error: ${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          try {
+            // Validate data structure
+            if (!Array.isArray(data.leaderboard?.contributors)) {
+              throw new Error('Invalid leaderboard data format');
+            }
+  
+            // Filter data based on timeFrame if needed
+            let filteredData = [...data.leaderboard.contributors];
+  
+            if (timeFrame === 'weekly') {
+              // Filter for entries within the last 7 days
+              const oneWeekAgo = new Date();
+              oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+              // This assumes your data has a 'date' field
+              // If not, you'll need to adjust this logic
+              filteredData = filteredData.filter(entry => {
+                if (!entry.date) return true; // Include entries without dates for now
+                return new Date(entry.date) >= oneWeekAgo;
+              });
+            }
+  
+            // Sort entries in descending order (highest score first)
+            filteredData.sort((a, b) => b.score - a.score);
+  
+            // Hide loading state
+            loadingElement.style.display = 'none';
+  
+            // Display the leaderboard
+            if (filteredData.length === 0) {
+              leaderboardList.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data available for this time period</td></tr>';
+              return;
+            }
+  
+            filteredData.forEach((entry, index) => {
+              const rank = index + 1;
+              const tr = document.createElement('tr');
+  
+              // Rank column with badge
+              const rankTd = document.createElement('td');
+              const rankBadge = document.createElement('div');
+              rankBadge.className = `rank-badge rank-${rank <= 3 ? rank : 'other'}`;
+              rankBadge.textContent = rank;
+              rankTd.appendChild(rankBadge);
+  
+              // Player column with avatar
+              const playerTd = document.createElement('td');
+              const playerInfo = document.createElement('div');
+              playerInfo.className = 'player-info';
+  
+              const avatar = document.createElement('img');
+              avatar.className = 'player-avatar';
+              avatar.src = entry.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(entry.username)}&background=random`;
+              avatar.alt = entry.username;
+  
+              const playerName = document.createElement('span');
+              playerName.textContent = entry.username;
+  
+              playerInfo.appendChild(avatar);
+              playerInfo.appendChild(playerName);
+              playerTd.appendChild(playerInfo);
+  
+              // Score column
+              const scoreTd = document.createElement('td');
+              scoreTd.textContent = entry.score.toLocaleString();
+  
+              tr.appendChild(rankTd);
+              tr.appendChild(playerTd);
+              tr.appendChild(scoreTd);
+  
+              leaderboardList.appendChild(tr);
+            });
+          } catch (error) {
+            console.error('Error processing leaderboard data:', error);
+            errorElement.textContent = 'Error processing leaderboard data. Please try again later.';
+            errorElement.style.display = 'block';
+            loadingElement.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading leaderboard:', error);
+          errorElement.textContent = 'Error loading leaderboard. Please try again later.';
+          errorElement.style.display = 'block';
+          loadingElement.style.display = 'none';
+        });
+    }
+  
+    // Function to switch between leaderboard tabs
+    function switchLeaderboardTab(tab) {
+      // Update active tab styling
+      document.getElementById('allTimeTab').classList.toggle('active', tab === 'allTime');
+      document.getElementById('weeklyTab').classList.toggle('active', tab === 'weekly');
+  
+      // Load the appropriate leaderboard data
+      loadLeaderboard(tab);
+    }
+  
     initialize();
+    loadLeaderboard();
   </script>
 </body>
 </html>
+
