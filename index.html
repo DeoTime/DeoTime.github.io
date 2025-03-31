@@ -1,953 +1,1252 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Math Quiz</title>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://ui-avatars.com https://media.istockphoto.com https://w0.peakpx.com https://github.com data:; media-src https://raw.githubusercontent.com; connect-src 'self' https://raw.githubusercontent.com https://leaderboard-backend-sigma.vercel.app;">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="images/tab-icon.png">
-  <style>
-    /* Dark mode switch styles */
-    .dark-mode-switch {
-      display: inline-block;
-      position: relative;
-      width: 60px;
-      height: 30px;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    body:not(.dark) .dark-mode-switch {
-      background: url('https://media.istockphoto.com/id/1545193103/vector/cartoon-flat-style-white-clouds-on-blue.jpg?s=612x612&w=0&k=20&c=4V39Etf6jxDZ_Gw9V2w9UzEgEw7iQLq5Qb-1GJhBiOY=') center center;
-    }
-    body.dark .dark-mode-switch {
-      background: url('https://w0.peakpx.com/wallpaper/249/688/HD-wallpaper-night-sky-black-stars.jpg') center center;
-    }
-    .dark-mode-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .dark-mode-switch label {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 24px;
-      height: 24px;
-      background: white;
-      border-radius: 50%;
-      transition: left 0.3s ease, background 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-    body:not(.dark) .dark-mode-switch label::after {
-      content: "☀";
-      color: #f39c12;
-    }
-    body.dark .dark-mode-switch label::after {
-      content: "🌙";
-      color: #f1c40f;
-    }
-    body.dark .dark-mode-switch label {
-      left: 33px;
-      background-color: #333;
-    }
-    .dark-toggle-container {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 10000;
-    }
-    
-    /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-    body {
-      background: #f5f5f5;
-      color: #2c3e50;
-      min-height: 100vh;
-      transition: background 0.3s ease, color 0.3s ease;
-      /* Subtle texture for background */
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-    }
-    body.dark {
-      background: #1e1e1e;
-      color: #ccc;
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23333333' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-    }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(90deg, #2980b9, #3498db);
-      color: white;
-      padding: 15px 20px;
-      font-size: 1.5em;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .header-right {
-      display: flex;
-      gap: 20px;
-    }
-    .header-link {
-      cursor: pointer;
-      color: white;
-      text-decoration: none;
-      font-size: 0.85em;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-    .header-link:after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: -4px;
-      left: 0;
-      background-color: white;
-      transition: width 0.3s ease;
-    }
-    .header-link:hover:after {
-      width: 100%;
-    }
+<title>Math Quiz</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://ui-avatars.com https://media.istockphoto.com https://w0.peakpx.com https://github.com data:; media-src https://raw.githubusercontent.com; connect-src 'self' https://raw.githubusercontent.com https://leaderboard-backend-sigma.vercel.app;">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="images/tab-icon.png">
+<style>
+  /* Dark mode switch styles */
+  .dark-mode-switch {
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 30px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  body:not(.dark) .dark-mode-switch {
+    background: url('https://media.istockphoto.com/id/1545193103/vector/cartoon-flat-style-white-clouds-on-blue.jpg?s=612x612&w=0&k=20&c=4V39Etf6jxDZ_Gw9V2w9UzEgEw7iQLq5Qb-1GJhBiOY=') center center;
+  }
+  body.dark .dark-mode-switch {
+    background: url('https://w0.peakpx.com/wallpaper/249/688/HD-wallpaper-night-sky-black-stars.jpg') center center;
+  }
+  .dark-mode-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .dark-mode-switch label {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.3s ease, background 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  body:not(.dark) .dark-mode-switch label::after {
+    content: "☀";
+    color: #f39c12;
+  }
+  body.dark .dark-mode-switch label::after {
+    content: "🌙";
+    color: #f1c40f;
+  }
+  body.dark .dark-mode-switch label {
+    left: 33px;
+    background-color: #333;
+  }
+  .dark-toggle-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 10000;
+  }
+  
+  /* Global Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  body {
+    background: #f5f5f5;
+    color: #2c3e50;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+    /* Subtle texture for background */
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+  body.dark {
+    background: #1e1e1e;
+    color: #ccc;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23333333' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .header-right {
+    display: flex;
+    gap: 20px;
+  }
+  .header-link {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85em;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .header-link:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: white;
+    transition: width 0.3s ease;
+  }
+  .header-link:hover:after {
+    width: 100%;
+  }
+  .wrapper {
+    display: flex;
+    margin-top: 70px;
+    justify-content: center;
+  }
+  .sidebar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    background: #fff;
+    color: #2c3e50;
+    padding: 20px;
+    border-right: 1px solid #e0e0e0;
+    transition: background 0.3s ease, color 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  }
+  body.dark .sidebar {
+    background: #2c2c2c;
+    color: #ccc;
+    border-right: 1px solid #444;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  }
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 500;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sidebar li {
+    padding: 15px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+  .sidebar li:hover {
+    background: #f0f0f0;
+    transform: translateX(5px);
+  }
+  body.dark .sidebar li:hover {
+    background: #3a3a3a;
+  }
+  .sidebar li.active {
+    background: #f0f0f0;
+    font-weight: 500;
+    border-left: 3px solid #3498db;
+    padding-left: 15px;
+  }
+  body.dark .sidebar li.active {
+    background: #555;
+    border-left: 3px solid #3498db;
+  }
+  .sidebar li.locked {
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.7;
+    background: none;
+  }
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    transition: background 0.3s ease, color 0.3s ease;
+    flex: 1;
+    border-radius: 8px;
+  }
+  body.dark .container {
+    background: #2c2c2c;
+    color: #ccc;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  h1:after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3498db, transparent);
+    bottom: 0;
+    left: 25%;
+  }
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    background: #000;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  #videoFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+  }
+  .image-container {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    background: #f0f0f0;
+    text-align: center;
+    padding: 20px;
+  }
+  .image-prompt {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+  body.dark .image-prompt {
+    color: #eee;
+  }
+  .image-container img {
+    max-width: 100%;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+  }
+  body.dark .image-container {
+    background: #333;
+  }
+  .quiz-section {
+    background: #f8f8f8;
+    padding: 25px;
+    margin: 25px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .quiz-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  body.dark .quiz-section {
+    background: #444;
+    border: 1px solid #666;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  #question {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: #2c3e50;
+    line-height: 1.5;
+  }
+  body.dark #question {
+    color: #eee;
+  }
+  .input-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  #answerInput {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  #answerInput:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+  }
+  body.dark #answerInput {
+    background: #333;
+    color: #eee;
+    border-color: #555;
+  }
+  body.dark #answerInput:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.3);
+  }
+  button {
+    padding: 12px 25px;
+    background: #3498db;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+  }
+  #score {
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 30px;
+    padding: 25px;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  body.dark #score {
+    background: #3a3a3a;
+    border: 1px solid #555;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  #score:empty {
+    display: none;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    margin: 20px 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transition: width 0.5s ease;
+    border-radius: 4px;
+  }
+  @media (max-width: 900px) {
     .wrapper {
-      display: flex;
-      margin-top: 70px;
-      justify-content: center;
+      flex-direction: column;
     }
     .sidebar {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      bottom: 0;
-      width: 300px;
-      background: #fff;
-      color: #2c3e50;
-      padding: 20px;
-      border-right: 1px solid #e0e0e0;
-      transition: background 0.3s ease, color 0.3s ease;
-      overflow-y: auto;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-    }
-    body.dark .sidebar {
-      background: #2c2c2c;
-      color: #ccc;
-      border-right: 1px solid #444;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-    }
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.2em;
-      font-weight: 500;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #3498db;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+      position: relative;
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #e0e0e0;
+      height: auto;
     }
     .sidebar li {
-      padding: 15px 10px;
-      cursor: pointer;
+      padding: 10px;
       border-bottom: 1px solid #e0e0e0;
-      transition: all 0.2s ease;
-      border-radius: 4px;
-    }
-    .sidebar li:hover {
-      background: #f0f0f0;
-      transform: translateX(5px);
-    }
-    body.dark .sidebar li:hover {
-      background: #3a3a3a;
-    }
-    .sidebar li.active {
-      background: #f0f0f0;
-      font-weight: 500;
-      border-left: 3px solid #3498db;
-      padding-left: 15px;
-    }
-    body.dark .sidebar li.active {
-      background: #555;
-      border-left: 3px solid #3498db;
-    }
-    .sidebar li.locked {
-      color: #999;
-      cursor: not-allowed;
-      opacity: 0.7;
-      background: none;
     }
     .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      transition: background 0.3s ease, color 0.3s ease;
-      flex: 1;
-      border-radius: 8px;
-    }
-    body.dark .container {
-      background: #2c2c2c;
-      color: #ccc;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      margin: 20px;
+      padding: 20px;
+      margin-left: 0;
     }
     h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-weight: 500;
-      position: relative;
-      display: inline-block;
-      padding-bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    h1:after {
-      content: '';
-      position: absolute;
-      width: 50%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, #3498db, transparent);
-      bottom: 0;
-      left: 25%;
-    }
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      background: #000;
-      margin: 0 auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    #videoFrame {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 8px;
-    }
-    .quiz-section {
-      background: #f8f8f8;
-      padding: 25px;
-      margin: 25px 0;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .quiz-section:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    body.dark .quiz-section {
-      background: #444;
-      border: 1px solid #666;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    #question {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-      font-weight: 500;
-      color: #2c3e50;
-      line-height: 1.5;
-    }
-    body.dark #question {
-      color: #eee;
-    }
-    .input-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    #answerInput {
-      flex: 1;
-      padding: 12px 20px;
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: all 0.3s ease;
-    }
-    #answerInput:focus {
-      outline: none;
-      border-color: #3498db;
-      box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
-    }
-    body.dark #answerInput {
-      background: #333;
-      color: #eee;
-      border-color: #555;
-    }
-    body.dark #answerInput:focus {
-      border-color: #3498db;
-      box-shadow: 0 0 0 3px rgba(52,152,219,0.3);
-    }
-    button {
-      padding: 12px 25px;
-      background: #3498db;
-      border: none;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-radius: 6px;
-      font-weight: 500;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    button:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-    }
-    #score {
-      text-align: center;
       font-size: 1.5em;
-      margin-top: 30px;
-      padding: 25px;
-      background: #f8f8f8;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    body.dark #score {
-      background: #3a3a3a;
-      border: 1px solid #555;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    .header-content {
+      position: static;
+      transform: none;
+      margin: 0 auto;
     }
-    #score:empty {
-      display: none;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: #e0e0e0;
-      margin: 20px 0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .progress {
-      height: 100%;
-      background: linear-gradient(90deg, #3498db, #2ecc71);
-      transition: width 0.5s ease;
-      border-radius: 4px;
-    }
-    @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column;
+  }
+  /* Popup styles */
+  .popup {
+    display: none;
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    transform: translateX(0);
+    background: white;
+    padding: 25px;
+    max-width: 600px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 1001;
+    font-size: 0.9em;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .popup.show {
+    opacity: 1;
+    transform: translateY(10px);
+  }
+  body.dark .popup {
+    background: #2c2c2c;
+    color: #ccc;
+    border: 1px solid #444;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  }
+  /* New Quagsire styles */
+  #quagsireContainer {
+    position: fixed;
+    left: 300px; /* Just to the right of the sidebar */
+    bottom: -240px; /* Only 20% visible initially (300px tall image => 60px visible) */
+    cursor: pointer;
+    z-index: 1100;
+    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #quagsireContainer img {
+    height: 300px; /* Bigger image */
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+  }
+  #quagsireBubble {
+    display: none;
+    position: absolute;
+    left: 70px;
+    bottom: 100%; /* Position the bubble above the image */
+    background: rgba(255,255,255,0.95);
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 1em;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    animation: bubble-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes bubble-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  body.dark #quagsireBubble {
+    background: rgba(44,44,44,0.95);
+    color: #ccc;
+    border: 1px solid #444;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  /* Leaderboard Styles */
+  .leaderboard-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  .leaderboard-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
+  body.dark .leaderboard-container {
+    background: #2c2c2c;
+    color: #ccc;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  }
+
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  body.dark .leaderboard-header {
+    border-bottom: 2px solid #444;
+  }
+
+  .leaderboard-tabs {
+    display: flex;
+    gap: 10px;
+  }
+
+  .leaderboard-tab {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  body.dark .leaderboard-tab {
+    background: #3a3a3a;
+    color: #ccc;
+  }
+
+  .leaderboard-tab.active {
+    background: #3498db;
+    color: white;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.3);
+  }
+
+  .leaderboard-content {
+    position: relative;
+  }
+
+  #leaderboardTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #leaderboardTable th, 
+  #leaderboardTable td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  body.dark #leaderboardTable th,
+  body.dark #leaderboardTable td {
+    border-bottom: 1px solid #444;
+  }
+
+  #leaderboardTable th {
+    font-weight: 600;
+    color: #555;
+  }
+
+  body.dark #leaderboardTable th {
+    color: #aaa;
+  }
+
+  #leaderboardTable tr {
+    transition: background 0.2s ease;
+  }
+
+  #leaderboardTable tr:hover {
+    background-color: #f5f5f5;
+  }
+
+  #leaderboardTable tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+
+  body.dark #leaderboardTable tr:hover {
+    background-color: #383838;
+  }
+
+  body.dark #leaderboardTable tr:nth-child(even) {
+    background-color: #333;
+  }
+
+  .leaderboard-loading,
+  .leaderboard-error {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }
+
+  body.dark .leaderboard-loading,
+  body.dark .leaderboard-error {
+    color: #aaa;
+  }
+
+  .leaderboard-error {
+    color: #e74c3c;
+    display: none;
+  }
+
+  .rank-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .rank-badge:hover {
+    transform: scale(1.1);
+  }
+
+  .rank-1 {
+    background: linear-gradient(45deg, #f1c40f, #f39c12);
+  }
+
+  .rank-2 {
+    background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+  }
+
+  .rank-3 {
+    background: linear-gradient(45deg, #cd7f32, #a0522d);
+  }
+
+  .rank-other {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+  }
+
+  .player-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .player-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid white;
+    transition: transform 0.2s ease;
+  }
+
+  .player-avatar:hover {
+    transform: scale(1.1);
+  }
+
+  body.dark .player-avatar {
+    border: 2px solid #444;
+  }
+  
+  /* Certificate styles */
+  #certificatePopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 2000;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  #certificatePopup.show {
+    opacity: 1;
+  }
+  
+  body.dark #certificatePopup {
+    background: #2c2c2c;
+    color: #ccc;
+    border: 1px solid #444;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  
+  .certificate {
+    background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+    border: 10px solid #3498db;
+    padding: 30px;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    font-family: 'Times New Roman', serif;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  body.dark .certificate {
+    background: linear-gradient(to bottom, #333, #222);
+    border: 10px solid #2980b9;
+    color: #eee;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  
+  .certificate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L100,100 M100,0 L0,100" stroke="black" stroke-width="1"/></svg>');
+    pointer-events: none;
+  }
+  
+  .certificate h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-family: 'Times New Roman', serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  body.dark .certificate h2 {
+    color: #eee;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+  
+  .certificate h3 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    font-weight: normal;
+  }
+  
+  .certificate .student-name {
+    font-size: 28px;
+    border-bottom: 2px solid #3498db;
+    display: inline-block;
+    padding: 0 20px 5px;
+    margin: 20px 0;
+    font-style: italic;
+  }
+  
+  .certificate .description {
+    margin: 20px 0;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .certificate .date {
+    margin-top: 40px;
+    font-style: italic;
+  }
+  
+  .certificate .signature {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .certificate .signature div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .certificate .signature img {
+    height: 60px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+  }
+  
+  .certificate .seal {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    width: 100px;
+    height: 100px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%233498db" stroke-width="2"/><circle cx="50" cy="50" r="40" fill="none" stroke="%233498db" stroke-width="1"/><text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-family="serif" font-size="12" fill="%233498db">CERTIFIED</text></svg>');
+    background-size: contain;
+    opacity: 0.8;
+    transform: rotate(-10deg);
+    transition: transform 0.3s ease;
+  }
+  
+  .certificate .seal:hover {
+    transform: rotate(0deg) scale(1.1);
+  }
+  
+  .certificate .mascot {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .certificate .mascot:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Achievements */
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .achievement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  body.dark .achievement {
+    background: #2c2c2c;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  }
+  
+  .achievement:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  
+  .achievement-icon {
+    font-size: 36px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .achievement:hover .achievement-icon {
+    transform: scale(1.2);
+  }
+  
+  .achievement-title {
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .achievement.locked {
+    opacity: 0.6;
+    filter: grayscale(1);
+  }
+  
+  .achievement.locked .achievement-icon::after {
+    content: "🔒";
+    position: absolute;
+    font-size: 18px;
+    bottom: -5px;
+    right: -5px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+  }
+  
+  /* Achievement notification */
+  #achievementNotification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(52, 152, 219, 0.95);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    transform: translateX(120%);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 300px;
+    backdrop-filter: blur(5px);
+  }
+  
+  #achievementNotification.show {
+    transform: translateX(0);
+  }
+  
+  #achievementNotification .achievement-icon {
+    font-size: 28px;
+    margin-right: 15px;
+    margin-bottom: 0;
+  }
+  
+  #achievementNotification .achievement-content {
+    flex: 1;
+  }
+  
+  #achievementNotification .achievement-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  #achievementNotification .achievement-description {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+  
+  /* Overlay */
+  #overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1999;
+    backdrop-filter: blur(3px);
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+  }
+  
+  body.dark ::-webkit-scrollbar-track {
+    background: #333;
+  }
+  
+  body.dark ::-webkit-scrollbar-thumb {
+    background: #3498db;
+  }
+  
+  body.dark ::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+  }
+  
+  /* Fancy divider */
+  .fancy-divider {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3498db, transparent);
+    margin: 30px 0;
+    border: none;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <!-- Empty div for flex spacing -->
+  </div>
+  <div class="header-content">
+    <img src="images/icon.png" alt="Turtle Icon" style="height:30px; vertical-align:middle; margin-right:10px;">
+    <span>DrippyTurtle Academy</span>
+  </div>
+  <div class="header-right">
+    <span id="achievementsLink" class="header-link">Achievements</span>
+    <span id="aboutUsLink" class="header-link">About Us</span>
+  </div>
+</div>
+
+<!-- About Us Popup -->
+<div id="aboutPopup" class="popup">
+  <p style="margin-bottom:15px;">Contributors:</p>
+  <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:15px;">
+    <div style="display:flex; align-items:center; gap:15px;">
+      <img src="images/boda.png" style="height:40px; width:40px; border-radius:50%;">
+      <span style="padding-right:20px;">Alvin Ip</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:15px;">
+      <img src="images/drippyturtle.png" style="height:40px; width:40px; border-radius:50%;">
+      <span style="padding-right:20px;">Jonathan He</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:15px;">
+      <img src="images/snom.png" style="height:40px; width:40px; border-radius:50%;">
+      <span style="padding-right:20px;">Robert Wang</span>
+    </div>
+  </div>
+  <button onclick="closePopup('aboutPopup')" style="margin-top:15px;">Close</button>
+</div>
+
+<!-- Achievements Popup -->
+<div id="achievementsPopup" class="popup">
+  <h2 style="margin-bottom:20px;">Achievements</h2>
+  <div class="achievements-grid" id="achievementsGrid">
+    <!-- Achievements will be added dynamically -->
+  </div>
+  <button onclick="closePopup('achievementsPopup')" style="margin-top:20px;">Close</button>
+</div>
+
+<!-- Certificate Popup -->
+<div id="overlay"></div>
+<div id="certificatePopup">
+  <div class="certificate">
+    <h2>Certificate of Completion</h2>
+    <h3>This certifies that</h3>
+    <div class="student-name" id="certificateName">Your Name</div>
+    <div class="description">
+      has successfully completed the course on<br>
+      <strong>Exponent Laws</strong><br>
+      with a score of <strong id="certificateScore">0</strong>
+    </div>
+    <div class="date" id="certificateDate"></div>
+    <div class="signature">
+      <div>
+        <img src="images/drippyturtle.png" alt="Signature">
+        <span>Jonathan He</span>
+        <span>Instructor</span>
+      </div>
+    </div>
+    <div class="mascot" style="background-image: url('images/quagsire.png');"></div>
+    <div class="seal"></div>
+  </div>
+  <div style="text-align:center; margin-top:20px;">
+    <button onclick="closeCertificate()">Close</button>
+  </div>
+</div>
+
+<div id="quagsireContainer">
+  <img id="quagsireImg" src="images/quagsire.png" alt="Quagsire">
+  <div id="quagsireBubble">Keep going, you're doing great!</div>
+</div>
+<div class="wrapper">
+  <div class="sidebar">
+    <h2 id="sidebarTitle">6 Units - 0% Completed</h2>
+    <ul>
+      <li onclick="loadVideo(sidebarMapping[0])" id="sidebarItem0">What is an exponent?</li>
+      <li onclick="loadVideo(sidebarMapping[1])" id="sidebarItem1">Multiplying Exponents!</li>
+      <li onclick="loadVideo(sidebarMapping[2])" id="sidebarItem2">Dividing Exponents!</li>
+      <li onclick="loadVideo(sidebarMapping[3])" id="sidebarItem3">Try This!</li>
+      <li onclick="loadVideo(sidebarMapping[4])" id="sidebarItem4">Power of a Power!</li>
+      <li onclick="loadVideo(sidebarMapping[5])" id="sidebarItem5">Exponent of One and Exponent of Zero!</li>
+      <li onclick="loadVideo(sidebarMapping[6])" id="sidebarItem6">Exponent of Negative Exponents!</li>
+      <li onclick="loadVideo(sidebarMapping[7])" id="sidebarItem7">Additional Question</li>
+      <li onclick="loadVideo(sidebarMapping[8])" id="sidebarItem8">Final Quiz</li>
+    </ul>
+  </div>
+  <div class="container">
+    <h1>Exponent Laws</h1>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="video-container" id="videoContainer">
+      <video id="videoFrame" controls style="width: 100%; height: auto;"></video>
+    </div>
+    
+    <div class="image-container" id="imageContainer" style="display: none;">
+      <div class="image-prompt">Solve the following:</div>
+      <img id="quizImage" src="https://raw.githubusercontent.com/DeoTime/images.storage/main/final_quiz.png" alt="Final Quiz Image">
+    </div>
+    
+    <div class="fancy-divider"></div>
+    
+    <div class="quiz-section">
+      <p id="question"></p>
+      <div class="input-group">
+        <input type="text" id="answerInput" placeholder="Enter your answer here...">
+        <button onclick="checkAnswer()">Submit</button>
+      </div>
+      <div id="feedback" style="margin-top:10px; font-size:14px;"></div>
+    </div>
+    <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0 0 0;">
+      <button onclick="goToNextVideo()">Next</button>
+    </div>
+    <div id="navButtons" style="text-align:center; margin:20px 0;">
+      <button onclick="backButton()"><<</button>
+      <button onclick="forwardButton()">>></button>
+    </div>
+    <div id="score"></div>
+  </div>
+</div>
+
+<!-- Achievement Notification -->
+<div id="achievementNotification">
+  <div class="achievement-icon">🏆</div>
+  <div class="achievement-content">
+    <div class="achievement-title">Achievement Unlocked!</div>
+    <div class="achievement-description">You've earned a new achievement</div>
+  </div>
+</div>
+
+<!-- Global Leaderboard Section -->
+<div class="leaderboard-container">
+  <div class="leaderboard-header">
+    <h2>Global Leaderboard</h2>
+    <div class="leaderboard-tabs">
+      <button id="allTimeTab" class="leaderboard-tab active" onclick="switchLeaderboardTab('allTime')">All Time</button>
+      <button id="weeklyTab" class="leaderboard-tab" onclick="switchLeaderboardTab('weekly')">Weekly</button>
+    </div>
+  </div>
+  <div class="leaderboard-content">
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardList"></tbody>
+    </table>
+    <div id="leaderboardLoading" class="leaderboard-loading">Loading leaderboard data...</div>
+    <div id="leaderboardError" class="leaderboard-error"></div>
+  </div>
+</div>
+<div class="dark-toggle-container">
+  <div class="dark-mode-switch">
+    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+    <label for="darkModeToggle"></label>
+  </div>
+</div>
+<script>
+  // Define achievements
+  const achievements = [
+    { id: 'first_quiz', title: 'First Steps', icon: '🏆', description: 'Complete your first quiz', unlocked: false },
+    { id: 'perfect_score', title: 'Perfect Score', icon: '⭐', description: 'Get a perfect score on any quiz', unlocked: false },
+    { id: 'all_complete', title: 'Master', icon: '🎓', description: 'Complete all lessons', unlocked: false },
+    { id: 'fast_learner', title: 'Speed Demon', icon: '⚡', description: 'Complete a quiz in under 30 seconds', unlocked: false },
+    { id: 'note_taker', title: 'Scholar', icon: '📝', description: 'Take notes on 3 different lessons', unlocked: false },
+    { id: 'night_owl', title: 'Night Owl', icon: '🦉', description: 'Study in dark mode for 10 minutes', unlocked: false }
+  ];
+  
+  // Check if user has already submitted a score
+  let hasSubmittedScore = localStorage.getItem('hasSubmittedScore') === 'true';
+  
+  // Dark mode tracking variables
+  let darkModeInterval;
+  let darkModeTime = 0;
+  
+  // Load progress from localStorage if it exists.
+  function loadProgress() {
+    const stored = localStorage.getItem('quizProgress');
+    if (stored) {
+      const progress = JSON.parse(stored);
+      maxUnlocked = progress.maxUnlocked || 1;
+      currentVideo = progress.currentVideo || 0;
+      totalTries = progress.totalTries || 0;
+      totalTime = progress.totalTime || 0;
+      
+      // Load solved status for each video
+      if (progress.solvedStatus && Array.isArray(progress.solvedStatus)) {
+        progress.solvedStatus.forEach((status, index) => {
+          if (index < videos.length && status) {
+            videos[index].solved = status;
+          }
+        });
       }
-      .sidebar {
-        position: relative;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-        height: auto;
+      
+      // Load achievements
+      if (progress.achievements) {
+        progress.achievements.forEach(ach => {
+          const achievement = achievements.find(a => a.id === ach.id);
+          if (achievement) {
+            achievement.unlocked = ach.unlocked;
+          }
+        });
       }
-      .sidebar li {
-        padding: 10px;
-        border-bottom: 1px solid #e0e0e0;
+    } else {
+      // When there's no stored progress, initialize with defaults and save them.
+      maxUnlocked = 1;      // Allow progress to continue to the second video if it's unlocked by non-quiz.
+      currentVideo = 0;
+      totalTries = 0;
+      totalTime = 0;
+      saveProgress();
+    }
+    
+    // Update progress bar immediately after loading
+    updateProgress();
+    
+    // Render achievements
+    renderAchievements();
+  }
+
+  function saveProgress() {
+    // Create a solvedStatus array to store which videos are solved
+    const solvedStatus = videos.map(video => video.solved || false);
+    
+    const progress = {
+      maxUnlocked,
+      currentVideo,
+      totalTries,
+      totalTime,
+      solvedStatus,
+      achievements: achievements.map(a => ({ id: a.id, unlocked: a.unlocked }))
+    };
+    localStorage.setItem('quizProgress', JSON.stringify(progress));
+  }
+  
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    
+    // Track time in dark mode for achievement
+    if (document.body.classList.contains('dark')) {
+      startDarkModeTracking();
+    } else {
+      stopDarkModeTracking();
+    }
+  }
+  
+  function startDarkModeTracking() {
+    darkModeInterval = setInterval(() => {
+      if (document.body.classList.contains('dark')) {
+        darkModeTime++;
+        if (darkModeTime >= 600) { // 10 minutes
+          unlockAchievement('night_owl');
+          clearInterval(darkModeInterval);
+        }
       }
-      .container {
-        margin: 20px;
-        padding: 20px;
-        margin-left: 0;
-      }
-      h1 {
-        font-size: 1.5em;
-      }
-      .header-content {
-        position: static;
-        transform: none;
-        margin: 0 auto;
-      }
-    }
-    /* Popup styles */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 70px;
-      right: 10px;
-      transform: translateX(0);
-      background: white;
-      padding: 25px;
-      max-width: 600px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-      z-index: 1001;
-      font-size: 0.9em;
-      max-height: 80vh;
-      overflow-y: auto;
-      border-radius: 10px;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .popup.show {
-      opacity: 1;
-      transform: translateY(10px);
-    }
-    body.dark .popup {
-      background: #2c2c2c;
-      color: #ccc;
-      border: 1px solid #444;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
-    /* New Quagsire styles */
-    #quagsireContainer {
-      position: fixed;
-      left: 300px; /* Just to the right of the sidebar */
-      bottom: -240px; /* Only 20% visible initially (300px tall image => 60px visible) */
-      cursor: pointer;
-      z-index: 1100;
-      transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    #quagsireContainer img {
-      height: 300px; /* Bigger image */
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-    }
-    #quagsireBubble {
-      display: none;
-      position: absolute;
-      left: 70px;
-      bottom: 100%; /* Position the bubble above the image */
-      background: rgba(255,255,255,0.95);
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 15px;
-      font-size: 1em;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      white-space: nowrap;
-      animation: bubble-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes bubble-pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    body.dark #quagsireBubble {
-      background: rgba(44,44,44,0.95);
-      color: #ccc;
-      border: 1px solid #444;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    /* Leaderboard Styles */
-    .leaderboard-container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 25px;
-      background: white;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
-    .leaderboard-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    }
-    body.dark .leaderboard-container {
-      background: #2c2c2c;
-      color: #ccc;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-
-    .leaderboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #e0e0e0;
-    }
-
-    body.dark .leaderboard-header {
-      border-bottom: 2px solid #444;
-    }
-
-    .leaderboard-tabs {
-      display: flex;
-      gap: 10px;
-    }
-
-    .leaderboard-tab {
-      padding: 8px 16px;
-      background: #f0f0f0;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-
-    body.dark .leaderboard-tab {
-      background: #3a3a3a;
-      color: #ccc;
-    }
-
-    .leaderboard-tab.active {
-      background: #3498db;
-      color: white;
-      box-shadow: 0 2px 8px rgba(52,152,219,0.3);
-    }
-
-    .leaderboard-content {
-      position: relative;
-    }
-
-    #leaderboardTable {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    #leaderboardTable th, 
-    #leaderboardTable td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    body.dark #leaderboardTable th,
-    body.dark #leaderboardTable td {
-      border-bottom: 1px solid #444;
-    }
-
-    #leaderboardTable th {
-      font-weight: 600;
-      color: #555;
-    }
-
-    body.dark #leaderboardTable th {
-      color: #aaa;
-    }
-
-    #leaderboardTable tr {
-      transition: background 0.2s ease;
-    }
-
-    #leaderboardTable tr:hover {
-      background-color: #f5f5f5;
-    }
-
-    #leaderboardTable tr:nth-child(even) {
-      background-color: #f8f8f8;
-    }
-
-    body.dark #leaderboardTable tr:hover {
-      background-color: #383838;
-    }
-
-    body.dark #leaderboardTable tr:nth-child(even) {
-      background-color: #333;
-    }
-
-    .leaderboard-loading,
-    .leaderboard-error {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
-
-    body.dark .leaderboard-loading,
-    body.dark .leaderboard-error {
-      color: #aaa;
-    }
-
-    .leaderboard-error {
-      color: #e74c3c;
-      display: none;
-    }
-
-    .rank-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      color: white;
-      font-weight: 600;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-
-    .rank-badge:hover {
-      transform: scale(1.1);
-    }
-
-    .rank-1 {
-      background: linear-gradient(45deg, #f1c40f, #f39c12);
-    }
-
-    .rank-2 {
-      background: linear-gradient(45deg, #bdc3c7, #95a5a6);
-    }
-
-    .rank-3 {
-      background: linear-gradient(45deg, #cd7f32, #a0522d);
-    }
-
-    .rank-other {
-      background: linear-gradient(45deg, #3498db, #2980b9);
-    }
-
-    .player-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .player-avatar {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border: 2px solid white;
-      transition: transform 0.2s ease;
-    }
-
-    .player-avatar:hover {
-      transform: scale(1.1);
-    }
-
-    body.dark .player-avatar {
-      border: 2px solid #444;
-    }
-    
-    /* Certificate styles */
-    #certificatePopup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 25px;
-      max-width: 800px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      z-index: 2000;
-      border-radius: 10px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    
-    #certificatePopup.show {
-      opacity: 1;
-    }
-    
-    body.dark #certificatePopup {
-      background: #2c2c2c;
-      color: #ccc;
-      border: 1px solid #444;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-    
-    .certificate {
-      background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
-      border: 10px solid #3498db;
-      padding: 30px;
-      text-align: center;
-      width: 100%;
-      position: relative;
-      font-family: 'Times New Roman', serif;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    body.dark .certificate {
-      background: linear-gradient(to bottom, #333, #222);
-      border: 10px solid #2980b9;
-      color: #eee;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    
-    .certificate::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L100,100 M100,0 L0,100" stroke="black" stroke-width="1"/></svg>');
-      pointer-events: none;
-    }
-    
-    .certificate h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      color: #2c3e50;
-      font-family: 'Times New Roman', serif;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
-    
-    body.dark .certificate h2 {
-      color: #eee;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    }
-    
-    .certificate h3 {
-      font-size: 24px;
-      margin-bottom: 30px;
-      font-weight: normal;
-    }
-    
-    .certificate .student-name {
-      font-size: 28px;
-      border-bottom: 2px solid #3498db;
-      display: inline-block;
-      padding: 0 20px 5px;
-      margin: 20px 0;
-      font-style: italic;
-    }
-    
-    .certificate .description {
-      margin: 20px 0;
-      font-size: 18px;
-      line-height: 1.5;
-    }
-    
-    .certificate .date {
-      margin-top: 40px;
-      font-style: italic;
-    }
-    
-    .certificate .signature {
-      margin-top: 30px;
-      display: flex;
-      justify-content: space-around;
-    }
-    
-    .certificate .signature div {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .certificate .signature img {
-      height: 60px;
-      margin-bottom: 10px;
-      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
-    }
-    
-    .certificate .seal {
-      position: absolute;
-      bottom: 30px;
-      right: 40px;
-      width: 100px;
-      height: 100px;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%233498db" stroke-width="2"/><circle cx="50" cy="50" r="40" fill="none" stroke="%233498db" stroke-width="1"/><text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-family="serif" font-size="12" fill="%233498db">CERTIFIED</text></svg>');
-      background-size: contain;
-      opacity: 0.8;
-      transform: rotate(-10deg);
-      transition: transform 0.3s ease;
-    }
-    
-    .certificate .seal:hover {
-      transform: rotate(0deg) scale(1.1);
-    }
-    
-    .certificate .mascot {
-      position: absolute;
-      bottom: 30px;
-      left: 40px;
-      width: 100px;
-      height: 100px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      transition: transform 0.3s ease;
-    }
-    
-    .certificate .mascot:hover {
-      transform: translateY(-5px);
-    }
-    
-    /* Achievements */
-    .achievements-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    
-    .achievement {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    
-    body.dark .achievement {
-      background: #2c2c2c;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    }
-    
-    .achievement:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
-    
-    .achievement-icon {
-      font-size: 36px;
-      margin-bottom: 15px;
-      transition: transform 0.3s ease;
-    }
-    
-    .achievement:hover .achievement-icon {
-      transform: scale(1.2);
-    }
-    
-    .achievement-title {
-      font-size: 14px;
-      text-align: center;
-      font-weight: 500;
-    }
-    
-    .achievement.locked {
-      opacity: 0.6;
-      filter: grayscale(1);
-    }
-    
-    .achievement.locked .achievement-icon::after {
-      content: "🔒";
-      position: absolute;
-      font-size: 18px;
-      bottom: -5px;
-      right: -5px;
-      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
-    }
-    
-    /* Achievement notification */
-    #achievementNotification {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: rgba(52, 152, 219, 0.95);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      transform: translateX(120%);
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-width: 300px;
-      backdrop-filter: blur(5px);
-    }
-    
-    #achievementNotification.show {
-      transform: translateX(0);
-    }
-    
-    #achievementNotification .achievement-icon {
-      font-size: 28px;
-      margin-right: 15px;
-      margin-bottom: 0;
-    }
-    
-    #achievementNotification .achievement-content {
-      flex: 1;
-    }
-    
-    #achievementNotification .achievement-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 5px;
-      text-align: left;
-    }
-    
-    #achievementNotification .achievement-description {
-      font-size: 13px;
-      opacity: 0.9;
-    }
-    
-    /* Overlay */
-    #overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 1999;
-      backdrop-filter: blur(3px);
-      transition: opacity 0.3s ease;
-    }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 5px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background: #3498db;
-      border-radius: 5px;
-      transition: background 0.3s ease;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2980b9;
-    }
-    
-    body.dark ::-webkit-scrollbar-track {
-      background: #333;
-    }
-    
-    body.dark ::-webkit-scrollbar-thumb {
-      background: #3498db;
-    }
-    
-    body.dark ::-webkit-scrollbar-thumb:hover {
-      background: #2980b9;
-    }
-    
-    /* Fancy divider */
-    .fancy-divider {
-      height: 3px;
-      background: linear-gradient(90deg, transparent, #3498db, transparent);
-      margin: 30px 0;
-      border: none;
-    }
-  </style>
-  <script>
-  // Update the score calculation function
+    }, 1000);
+  }
+  
+  function stopDarkModeTracking() {
+    clearInterval(darkModeInterval);
+  }
+  
+  // Calculate score based on time and attempts
   function calculateScore(time, attempts) {
     // Base score of 500 for completing all problems
     let baseScore = 500;
@@ -984,539 +1283,280 @@
     
     return totalScore;
   }
-</script>
-</head>
-<body>
-  <div class="header">
-    <div class="header-left">
-      <!-- Empty div for flex spacing -->
-    </div>
-    <div class="header-content">
-      <img src="images/icon.png" alt="Turtle Icon" style="height:30px; vertical-align:middle; margin-right:10px;">
-      <span>DrippyTurtle Academy</span>
-    </div>
-    <div class="header-right">
-      <span id="achievementsLink" class="header-link">Achievements</span>
-      <span id="aboutUsLink" class="header-link">About Us</span>
-    </div>
-  </div>
   
-  <!-- About Us Popup -->
-  <div id="aboutPopup" class="popup">
-    <p style="margin-bottom:15px;">Contributors:</p>
-    <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:15px;">
-      <div style="display:flex; align-items:center; gap:15px;">
-        <img src="images/boda.png" style="height:40px; width:40px; border-radius:50%;">
-        <span style="padding-right:20px;">Alvin Ip</span>
-      </div>
-      <div style="display:flex; align-items:center; gap:15px;">
-        <img src="images/drippyturtle.png" style="height:40px; width:40px; border-radius:50%;">
-        <span style="padding-right:20px;">Jonathan He</span>
-      </div>
-      <div style="display:flex; align-items:center; gap:15px;">
-        <img src="images/snom.png" style="height:40px; width:40px; border-radius:50%;">
-        <span style="padding-right:20px;">Robert Wang</span>
-      </div>
-    </div>
-    <button onclick="closePopup('aboutPopup')" style="margin-top:15px;">Close</button>
-  </div>
-  
-  <!-- Achievements Popup -->
-  <div id="achievementsPopup" class="popup">
-    <h2 style="margin-bottom:20px;">Achievements</h2>
-    <div class="achievements-grid" id="achievementsGrid">
-      <!-- Achievements will be added dynamically -->
-    </div>
-    <button onclick="closePopup('achievementsPopup')" style="margin-top:20px;">Close</button>
-  </div>
-  
-  <!-- Certificate Popup -->
-  <div id="overlay"></div>
-  <div id="certificatePopup">
-    <div class="certificate">
-      <h2>Certificate of Completion</h2>
-      <h3>This certifies that</h3>
-      <div class="student-name" id="certificateName">Your Name</div>
-      <div class="description">
-        has successfully completed the course on<br>
-        <strong>Exponent Laws</strong><br>
-        with a score of <strong id="certificateScore">0</strong>
-      </div>
-      <div class="date" id="certificateDate"></div>
-      <div class="signature">
-        <div>
-          <img src="images/drippyturtle.png" alt="Signature">
-          <span>Jonathan He</span>
-          <span>Instructor</span>
-        </div>
-      </div>
-      <div class="mascot" style="background-image: url('images/quagsire.png');"></div>
-      <div class="seal"></div>
-    </div>
-    <div style="text-align:center; margin-top:20px;">
-      <button onclick="closeCertificate()">Close</button>
-    </div>
-  </div>
-  
-  <div id="quagsireContainer">
-    <img id="quagsireImg" src="images/quagsire.png" alt="Quagsire">
-    <div id="quagsireBubble">Keep going, you're doing great!</div>
-  </div>
-  <div class="wrapper">
-    <div class="sidebar">
-      <h2 id="sidebarTitle">6 Units - 0% Completed</h2>
-      <ul>
-        <li onclick="loadVideo(sidebarMapping[0])" id="sidebarItem0">What is an exponent?</li>
-        <li onclick="loadVideo(sidebarMapping[1])" id="sidebarItem1">Multiplying Exponents!</li>
-        <li onclick="loadVideo(sidebarMapping[2])" id="sidebarItem2">Dividing Exponents!</li>
-        <li onclick="loadVideo(sidebarMapping[3])" id="sidebarItem3">Try This!</li>
-        <li onclick="loadVideo(sidebarMapping[4])" id="sidebarItem4">Power of a Power!</li>
-        <li onclick="loadVideo(sidebarMapping[5])" id="sidebarItem5">Exponent of One and Exponent of Zero!</li>
-        <li onclick="loadVideo(sidebarMapping[6])" id="sidebarItem6">Exponent of Negative Exponents!</li>
-        <li onclick="loadVideo(sidebarMapping[7])" id="sidebarItem7">Additional Question</li>
-        <li onclick="loadVideo(sidebarMapping[8])" id="sidebarItem8">Final Quiz Q1</li>
-        <li onclick="loadVideo(sidebarMapping[9])" id="sidebarItem9">Final Quiz Q2</li>
-        <li onclick="loadVideo(sidebarMapping[10])" id="sidebarItem10">Final Quiz Q3</li>
-      </ul>
-    </div>
-    <div class="container">
-      <h1>Exponent Laws</h1>
-      <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-      </div>
-      
-      <div class="video-container">
-        <video id="videoFrame" controls style="width: 100%; height: auto;"></video>
-      </div>
-      
-      <div class="fancy-divider"></div>
-      
-      <div class="quiz-section">
-        <p id="question"></p>
-        <div class="input-group">
-          <input type="text" id="answerInput" placeholder="Enter your answer here...">
-          <button onclick="checkAnswer()">Submit</button>
-        </div>
-        <div id="feedback" style="margin-top:10px; font-size:14px;"></div>
-      </div>
-      <div id="nonQuizSection" style="display:none; text-align:center; margin:20px 0 0 0;">
-        <button onclick="goToNextVideo()">Next</button>
-      </div>
-      <div id="navButtons" style="text-align:center; margin:20px 0;">
-        <button onclick="backButton()"><<</button>
-        <button onclick="forwardButton()">>></button>
-      </div>
-      <div id="score"></div>
-    </div>
-  </div>
-  
-  <!-- Achievement Notification -->
-  <div id="achievementNotification">
-    <div class="achievement-icon">🏆</div>
-    <div class="achievement-content">
-      <div class="achievement-title">Achievement Unlocked!</div>
-      <div class="achievement-description">You've earned a new achievement</div>
-    </div>
-  </div>
-  
-  <!-- Global Leaderboard Section -->
-  <div class="leaderboard-container">
-    <div class="leaderboard-header">
-      <h2>Global Leaderboard</h2>
-      <div class="leaderboard-tabs">
-        <button id="allTimeTab" class="leaderboard-tab active" onclick="switchLeaderboardTab('allTime')">All Time</button>
-        <button id="weeklyTab" class="leaderboard-tab" onclick="switchLeaderboardTab('weekly')">Weekly</button>
-      </div>
-    </div>
-    <div class="leaderboard-content">
-      <table id="leaderboardTable">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboardList"></tbody>
-      </table>
-      <div id="leaderboardLoading" class="leaderboard-loading">Loading leaderboard data...</div>
-      <div id="leaderboardError" class="leaderboard-error"></div>
-    </div>
-  </div>
-  <div class="dark-toggle-container">
-    <div class="dark-mode-switch">
-      <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-      <label for="darkModeToggle"></label>
-    </div>
-  </div>
-  <script>
-    // Define achievements
-    const achievements = [
-      { id: 'first_quiz', title: 'First Steps', icon: '🏆', description: 'Complete your first quiz', unlocked: false },
-      { id: 'perfect_score', title: 'Perfect Score', icon: '⭐', description: 'Get a perfect score on any quiz', unlocked: false },
-      { id: 'all_complete', title: 'Master', icon: '🎓', description: 'Complete all lessons', unlocked: false },
-      { id: 'fast_learner', title: 'Speed Demon', icon: '⚡', description: 'Complete a quiz in under 30 seconds', unlocked: false },
-      { id: 'note_taker', title: 'Scholar', icon: '📝', description: 'Take notes on 3 different lessons', unlocked: false },
-      { id: 'night_owl', title: 'Night Owl', icon: '🦉', description: 'Study in dark mode for 10 minutes', unlocked: false }
-    ];
-    
+  function submitScore(name, score) {
     // Check if user has already submitted a score
-    let hasSubmittedScore = localStorage.getItem('hasSubmittedScore') === 'true';
+    if (hasSubmittedScore) {
+      showNotification('⚠️', 'Already Submitted', 'You have already submitted your score to the leaderboard.');
+      return;
+    }
     
-    // Dark mode tracking variables
-    let darkModeInterval;
-    let darkModeTime = 0;
-    
-    // Load progress from localStorage if it exists.
-    function loadProgress() {
-      const stored = localStorage.getItem('quizProgress');
-      if (stored) {
-        const progress = JSON.parse(stored);
-        maxUnlocked = progress.maxUnlocked || 1;
-        currentVideo = progress.currentVideo || 0;
-        totalTries = progress.totalTries || 0;
-        totalTime = progress.totalTime || 0;
+    // Validate inputs
+    if (!name || typeof name !== 'string' || name.length > 50) {
+      console.error('Invalid name provided');
+      return;
+    }
+
+    if (!score || isNaN(score) || score < 0) {
+      console.error('Invalid score provided');
+      return;
+    }
+
+    // Add CSRF protection if your backend supports it
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    fetch('https://leaderboard-backend-sigma.vercel.app/api/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        name: name.trim(), 
+        score: Math.floor(score),
+        timestamp: new Date().toISOString()
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        console.log('Score submitted successfully');
+        // Mark that user has submitted a score
+        hasSubmittedScore = true;
+        localStorage.setItem('hasSubmittedScore', 'true');
+        // Reload the leaderboard to show the updated scores
+        loadLeaderboard();
         
-        // Load solved status for each video
-        if (progress.solvedStatus && Array.isArray(progress.solvedStatus)) {
-          progress.solvedStatus.forEach((status, index) => {
-            if (index < videos.length && status) {
-              videos[index].solved = status;
-            }
-          });
-        }
-        
-        // Load achievements
-        if (progress.achievements) {
-          progress.achievements.forEach(ach => {
-            const achievement = achievements.find(a => a.id === ach.id);
-            if (achievement) {
-              achievement.unlocked = ach.unlocked;
-            }
-          });
-        }
+        // Show certificate
+        showCertificate(name, score);
       } else {
-        // When there's no stored progress, initialize with defaults and save them.
-        maxUnlocked = 1;      // Allow progress to continue to the second video if it's unlocked by non-quiz.
-        currentVideo = 0;
-        totalTries = 0;
-        totalTime = 0;
-        saveProgress();
+        console.error('Error submitting score:', data.error);
       }
-      
-      // Update progress bar immediately after loading
-      updateProgress();
-      
-      // Render achievements
-      renderAchievements();
-    }
-  
-    function saveProgress() {
-      // Create a solvedStatus array to store which videos are solved
-      const solvedStatus = videos.map(video => video.solved || false);
-      
-      const progress = {
-        maxUnlocked,
-        currentVideo,
-        totalTries,
-        totalTime,
-        solvedStatus,
-        achievements: achievements.map(a => ({ id: a.id, unlocked: a.unlocked }))
-      };
-      localStorage.setItem('quizProgress', JSON.stringify(progress));
-    }
-    
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-      
-      // Track time in dark mode for achievement
-      if (document.body.classList.contains('dark')) {
-        startDarkModeTracking();
-      } else {
-        stopDarkModeTracking();
-      }
-    }
-    
-    function startDarkModeTracking() {
-      darkModeInterval = setInterval(() => {
-        if (document.body.classList.contains('dark')) {
-          darkModeTime++;
-          if (darkModeTime >= 600) { // 10 minutes
-            unlockAchievement('night_owl');
-            clearInterval(darkModeInterval);
-          }
-        }
-      }, 1000);
-    }
-    
-    function stopDarkModeTracking() {
-      clearInterval(darkModeInterval);
-    }
-    
-    // Calculate score based on time and attempts
-    
-    
-    function submitScore(name, score) {
-      // Check if user has already submitted a score
-      if (hasSubmittedScore) {
-        showNotification('⚠️', 'Already Submitted', 'You have already submitted your score to the leaderboard.');
-        return;
-      }
-      
-      // Validate inputs
-      if (!name || typeof name !== 'string' || name.length > 50) {
-        console.error('Invalid name provided');
-        return;
-      }
-  
-      if (!score || isNaN(score) || score < 0) {
-        console.error('Invalid score provided');
-        return;
-      }
-  
-      // Add CSRF protection if your backend supports it
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-  
-      fetch('https://leaderboard-backend-sigma.vercel.app/api/scores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: name.trim(), 
-          score: Math.floor(score),
-          timestamp: new Date().toISOString()
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success) {
-          console.log('Score submitted successfully');
-          // Mark that user has submitted a score
-          hasSubmittedScore = true;
-          localStorage.setItem('hasSubmittedScore', 'true');
-          // Reload the leaderboard to show the updated scores
-          loadLeaderboard();
-          
-          // Show certificate
-          showCertificate(name, score);
-        } else {
-          console.error('Error submitting score:', data.error);
-        }
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-      });
-    }
-    
-    function showCertificate(name, score) {
-      document.getElementById('certificateName').textContent = name;
-      document.getElementById('certificateScore').textContent = score;
-      document.getElementById('certificateDate').textContent = new Date().toLocaleDateString();
-      
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('certificatePopup').style.display = 'block';
-      
-      // Add animation
-      setTimeout(() => {
-        document.getElementById('certificatePopup').classList.add('show');
-      }, 50);
-    }
-    
-    function closeCertificate() {
-      document.getElementById('certificatePopup').classList.remove('show');
-      setTimeout(() => {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('certificatePopup').style.display = 'none';
-      }, 500);
-    }
-    
-    function closePopup(popupId) {
-      document.getElementById(popupId).style.display = 'none';
-    }
-    
-    document.getElementById('aboutUsLink').addEventListener('click', function(event) {
-      const popup = document.getElementById('aboutPopup');
-      event.stopPropagation();
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.classList.add('show');
-      }, 50);
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
     });
-    
-    document.getElementById('achievementsLink').addEventListener('click', function(event) {
-      const popup = document.getElementById('achievementsPopup');
-      event.stopPropagation();
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.classList.add('show');
-      }, 50);
-      renderAchievements();
-    });
-    
-    document.addEventListener('click', function(event) {
-      const aboutPopup = document.getElementById('aboutPopup');
-      const achievementsPopup = document.getElementById('achievementsPopup');
-      const aboutUsLink = document.getElementById('aboutUsLink');
-      const achievementsLink = document.getElementById('achievementsLink');
-      
-      if (aboutPopup.style.display === 'block' && 
-          !aboutPopup.contains(event.target) && 
-          event.target !== aboutUsLink) {
-        aboutPopup.classList.remove('show');
-        setTimeout(() => {
-          aboutPopup.style.display = 'none';
-        }, 300);
-      }
-      
-      if (achievementsPopup.style.display === 'block' && 
-          !achievementsPopup.contains(event.target) && 
-          event.target !== achievementsLink) {
-        achievementsPopup.classList.remove('show');
-        setTimeout(() => {
-          achievementsPopup.style.display = 'none';
-        }, 300);
-      }
-    });
-    
-    const quagsireMessages = [
-      "Keep going, you're doing great!",
-      "You got this!",
-      "Believe in yourself!",
-      "Almost there, stay strong!",
-      "Quack"
-    ];
-    
-    document.getElementById('quagsireContainer').addEventListener('click', function(event) {
-      const container = document.getElementById('quagsireContainer');
-      const bubble = document.getElementById('quagsireBubble');
-      const msg = quagsireMessages[Math.floor(Math.random() * quagsireMessages.length)];
-      bubble.textContent = msg;
-      container.style.bottom = "-120px";
-      bubble.style.display = 'block';
-      setTimeout(() => {
-        container.style.bottom = "-240px";
-        bubble.style.display = 'none';
-      }, 2000);
-      event.stopPropagation();
-    });
-    
-    const videos = [
-      { id: 'INTRO1', isQuiz: false },
-      { id: 'INTRO2', isQuiz: false },
-      { id: 'QUIZ2', question: 'What is the answer', answer: 'te', tries: 0, isQuiz: true },
-      { id: 'INTRO3', isQuiz: false },
-      { id: 'QUIZ3', question: 'What is the answer', answer: 'answer3', tries: 0, isQuiz: true },
-      { id: 'POP1', question: 'Answer this standalone question.', answer: 'standalone', tries: 0, isQuiz: true },
-      { id: 'INTRO4', isQuiz: false },
-      { id: 'QUIZ4', question: 'What is the answer?', answer: 'answer4', tries: 0, isQuiz: true },
-      { id: 'INTRO5', isQuiz: false },
-      { id: 'QUIZ5', question: 'What is the answer?', answer: 'answer5', tries: 0, isQuiz: true },
-      { id: 'INTRO6', isQuiz: false },
-      { id: 'QUIZ6', question: 'What is the answer?', answer: 'answer6', tries: 0, isQuiz: true },
-      { id: 'POP2', question: 'Additional Question: What is 5 + 3?', answer: '8', tries: 0, isQuiz: true },
-      { id: 'FINALQ1_ID', question: 'Final Quiz Question 1: What is 2^3?', answer: '8', tries: 0, isQuiz: true },
-      { id: 'FINALQ2_ID', question: 'Final Quiz Question 2: Simplify 2^4 * 2^3.', answer: '128', tries: 0, isQuiz: true },
-      { id: 'FINALQ3_ID', question: 'Final Quiz Question 3: What is (2^3)^2?', answer: '64', tries: 0, isQuiz: true }
-    ];
-    
-    const sidebarMapping = [0, 1, 4, 5, 7, 9, 11, 12, 13, 14, 15];
-    let maxUnlocked = 1;
-    let currentVideo = 0;
-    let totalTries = 0;
-    let startTime = Date.now();
-    let totalTime = 0;
-    
-    // Function to show achievement notification
-    function showNotification(icon, title, description) {
-      const notification = document.getElementById('achievementNotification');
-      const iconElement = notification.querySelector('.achievement-icon');
-      const titleElement = notification.querySelector('.achievement-title');
-      const descriptionElement = notification.querySelector('.achievement-description');
-      
-      iconElement.textContent = icon;
-      titleElement.textContent = title;
-      descriptionElement.textContent = description;
-      
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
-    
-    // Function to unlock achievements
-    function unlockAchievement(achievementId) {
-      const achievement = achievements.find(a => a.id === achievementId);
-      if (achievement && !achievement.unlocked) {
-        achievement.unlocked = true;
-        saveProgress();
-        renderAchievements();
-        
-        // Show notification
-        showNotification(achievement.icon, `Achievement Unlocked: ${achievement.title}`, achievement.description);
-      }
-    }
-    
-    // Function to render achievements
-    function renderAchievements() {
-      const container = document.getElementById('achievementsGrid');
-      container.innerHTML = '';
-      
-      achievements.forEach(achievement => {
-        const achievementEl = document.createElement('div');
-        achievementEl.className = `achievement ${achievement.unlocked ? '' : 'locked'}`;
-        achievementEl.title = achievement.description;
-        
-        const iconEl = document.createElement('div');
-        iconEl.className = 'achievement-icon';
-        iconEl.textContent = achievement.icon;
-        
-        const titleEl = document.createElement('div');
-        titleEl.className = 'achievement-title';
-        titleEl.textContent = achievement.title;
-        
-        achievementEl.appendChild(iconEl);
-        achievementEl.appendChild(titleEl);
-        container.appendChild(achievementEl);
-      });
-    }
+  }
   
-    // Function to load a specific video by index
-    function loadVideo(index) {
-      if (index > maxUnlocked) {
-        showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
-        return;
-      }
-      
-      currentVideo = index;
-      startTime = Date.now();
-      initialize();
+  function showCertificate(name, score) {
+    document.getElementById('certificateName').textContent = name;
+    document.getElementById('certificateScore').textContent = score;
+    document.getElementById('certificateDate').textContent = new Date().toLocaleDateString();
+    
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('certificatePopup').style.display = 'block';
+    
+    // Add animation
+    setTimeout(() => {
+      document.getElementById('certificatePopup').classList.add('show');
+    }, 50);
+  }
+  
+  function closeCertificate() {
+    document.getElementById('certificatePopup').classList.remove('show');
+    setTimeout(() => {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('certificatePopup').style.display = 'none';
+    }, 500);
+  }
+  
+  function closePopup(popupId) {
+    document.getElementById(popupId).style.display = 'none';
+  }
+  
+  document.getElementById('aboutUsLink').addEventListener('click', function(event) {
+    const popup = document.getElementById('aboutPopup');
+    event.stopPropagation();
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.classList.add('show');
+    }, 50);
+  });
+  
+  document.getElementById('achievementsLink').addEventListener('click', function(event) {
+    const popup = document.getElementById('achievementsPopup');
+    event.stopPropagation();
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.classList.add('show');
+    }, 50);
+    renderAchievements();
+  });
+  
+  document.addEventListener('click', function(event) {
+    const aboutPopup = document.getElementById('aboutPopup');
+    const achievementsPopup = document.getElementById('achievementsPopup');
+    const aboutUsLink = document.getElementById('aboutUsLink');
+    const achievementsLink = document.getElementById('achievementsLink');
+    
+    if (aboutPopup.style.display === 'block' && 
+        !aboutPopup.contains(event.target) && 
+        event.target !== aboutUsLink) {
+      aboutPopup.classList.remove('show');
+      setTimeout(() => {
+        aboutPopup.style.display = 'none';
+      }, 300);
+    }
+    
+    if (achievementsPopup.style.display === 'block' && 
+        !achievementsPopup.contains(event.target) && 
+        event.target !== achievementsLink) {
+      achievementsPopup.classList.remove('show');
+      setTimeout(() => {
+        achievementsPopup.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  const quagsireMessages = [
+    "Keep going, you're doing great!",
+    "You got this!",
+    "Believe in yourself!",
+    "Almost there, stay strong!",
+    "Quack"
+  ];
+  
+  document.getElementById('quagsireContainer').addEventListener('click', function(event) {
+    const container = document.getElementById('quagsireContainer');
+    const bubble = document.getElementById('quagsireBubble');
+    const msg = quagsireMessages[Math.floor(Math.random() * quagsireMessages.length)];
+    bubble.textContent = msg;
+    container.style.bottom = "-120px";
+    bubble.style.display = 'block';
+    setTimeout(() => {
+      container.style.bottom = "-240px";
+      bubble.style.display = 'none';
+    }, 2000);
+    event.stopPropagation();
+  });
+  
+  const videos = [
+    { id: 'INTRO1', isQuiz: false },
+    { id: 'INTRO2', isQuiz: false },
+    { id: 'QUIZ2', question: 'What is the answer', answer: 'te', tries: 0, isQuiz: true },
+    { id: 'INTRO3', isQuiz: false },
+    { id: 'QUIZ3', question: 'What is the answer', answer: 'answer3', tries: 0, isQuiz: true },
+    { id: 'POP1', question: 'Answer this standalone question.', answer: 'standalone', tries: 0, isQuiz: true },
+    { id: 'INTRO4', isQuiz: false },
+    { id: 'QUIZ4', question: 'What is the answer?', answer: 'answer4', tries: 0, isQuiz: true },
+    { id: 'INTRO5', isQuiz: false },
+    { id: 'QUIZ5', question: 'What is the answer?', answer: 'answer5', tries: 0, isQuiz: true },
+    { id: 'INTRO6', isQuiz: false },
+    { id: 'QUIZ6', question: 'What is the answer?', answer: 'answer6', tries: 0, isQuiz: true },
+    { id: 'POP2', question: 'Additional Question: What is 5 + 3?', answer: '8', tries: 0, isQuiz: true },
+    { id: 'FINAL_QUIZ', question: 'Final Quiz: Apply all exponent laws to simplify the above', answer: '(-27y^12)/(2x^6)', tries: 0, isQuiz: true, isImage: true }
+  ];
+  
+  const sidebarMapping = [0, 1, 4, 5, 7, 9, 11, 12, 13];
+  let maxUnlocked = 1;
+  let currentVideo = 0;
+  let totalTries = 0;
+  let startTime = Date.now();
+  let totalTime = 0;
+  
+  function normalizeAnswer(str) {
+    return str.toLowerCase().trim().replace(/\s+/g, '');
+  }
+  // Function to show achievement notification
+  function showNotification(icon, title, description) {
+    const notification = document.getElementById('achievementNotification');
+    const iconElement = notification.querySelector('.achievement-icon');
+    const titleElement = notification.querySelector('.achievement-title');
+    const descriptionElement = notification.querySelector('.achievement-description');
+    
+    iconElement.textContent = icon;
+    titleElement.textContent = title;
+    descriptionElement.textContent = description;
+    
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+  
+  // Function to unlock achievements
+  function unlockAchievement(achievementId) {
+    const achievement = achievements.find(a => a.id === achievementId);
+    if (achievement && !achievement.unlocked) {
+      achievement.unlocked = true;
       saveProgress();
+      renderAchievements();
+      
+      // Show notification
+      showNotification(achievement.icon, `Achievement Unlocked: ${achievement.title}`, achievement.description);
+    }
+  }
+  
+  // Function to render achievements
+  function renderAchievements() {
+    const container = document.getElementById('achievementsGrid');
+    container.innerHTML = '';
+    
+    achievements.forEach(achievement => {
+      const achievementEl = document.createElement('div');
+      achievementEl.className = `achievement ${achievement.unlocked ? '' : 'locked'}`;
+      achievementEl.title = achievement.description;
+      
+      const iconEl = document.createElement('div');
+      iconEl.className = 'achievement-icon';
+      iconEl.textContent = achievement.icon;
+      
+      const titleEl = document.createElement('div');
+      titleEl.className = 'achievement-title';
+      titleEl.textContent = achievement.title;
+      
+      achievementEl.appendChild(iconEl);
+      achievementEl.appendChild(titleEl);
+      container.appendChild(achievementEl);
+    });
+  }
+
+  // Function to load a specific video by index
+  function loadVideo(index) {
+    if (index > maxUnlocked) {
+      showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
+      return;
     }
     
-    // Function to update progress bar and sidebar title
-    function updateProgress() {
-      const totalQuizVideos = videos.filter(v => v.isQuiz).length;
-      const completedQuizVideos = videos.filter(v => v.isQuiz && v.solved).length;
-      const progressPercent = totalQuizVideos > 0 ? (completedQuizVideos / totalQuizVideos) * 100 : 0;
-      
-      document.getElementById('progress').style.width = `${progressPercent}%`;
-      document.getElementById('sidebarTitle').textContent = `6 Units - ${Math.round(progressPercent)}% Completed`;
-      
-      // Check for all complete achievement
-      if (completedQuizVideos === totalQuizVideos && totalQuizVideos > 0) {
-        unlockAchievement('all_complete');
-      }
-    }
+    currentVideo = index;
+    startTime = Date.now();
+    initialize();
+    saveProgress();
+  }
   
-    function initialize() {
-      updateProgress();
+  // Function to update progress bar and sidebar title
+  function updateProgress() {
+    const totalQuizVideos = videos.filter(v => v.isQuiz).length;
+    const completedQuizVideos = videos.filter(v => v.isQuiz && v.solved).length;
+    const progressPercent = totalQuizVideos > 0 ? (completedQuizVideos / totalQuizVideos) * 100 : 0;
+    
+    document.getElementById('progress').style.width = `${progressPercent}%`;
+    document.getElementById('sidebarTitle').textContent = `6 Units - ${Math.round(progressPercent)}% Completed`;
+    
+    // Check for all complete achievement
+    if (completedQuizVideos === totalQuizVideos && totalQuizVideos > 0) {
+      unlockAchievement('all_complete');
+    }
+  }
+
+  function initialize() {
+    updateProgress();
+    
+    const videoContainer = document.getElementById('videoContainer');
+    const imageContainer = document.getElementById('imageContainer');
+    const videoFrame = document.getElementById('videoFrame');
+    
+    // Check if this is the final quiz with an image
+    if (videos[currentVideo].isImage) {
+      videoContainer.style.display = 'none';
+      imageContainer.style.display = 'block';
+    } else {
+      videoContainer.style.display = 'block';
+      imageContainer.style.display = 'none';
       
-      const videoFrame = document.getElementById('videoFrame');
       videoFrame.pause();
       videoFrame.src = `https://raw.githubusercontent.com/DeoTime/images.storage/main/${videos[currentVideo].id}.mp4`;
       videoFrame.currentTime = 0;
@@ -1524,338 +1564,328 @@
       videoFrame.play().catch((error) => {
         console.log("Auto-play prevented:", error);
       });
-      document.getElementById('answerInput').value = '';
-      document.getElementById('feedback').textContent = '';
+    }
+    
+    document.getElementById('answerInput').value = '';
+    document.getElementById('feedback').textContent = '';
 
-      if (videos[currentVideo].isQuiz) {
-        if (videos[currentVideo].solved) {
-          // Already solved; hide quiz input and show the Next button
-          document.querySelector('.quiz-section').style.display = 'none';
-          document.getElementById('nonQuizSection').style.display = 'block';
-        } else {
-          // Not solved; display quiz question
-          document.querySelector('.quiz-section').style.display = 'block';
-          document.getElementById('nonQuizSection').style.display = 'none';
-          document.getElementById('question').textContent = videos[currentVideo].question;
-          document.getElementById('answerInput').focus();
-        }
-      } else {
+    if (videos[currentVideo].isQuiz) {
+      if (videos[currentVideo].solved) {
+        // Already solved; hide quiz input and show the Next button
         document.querySelector('.quiz-section').style.display = 'none';
         document.getElementById('nonQuizSection').style.display = 'block';
-        // For non-quiz videos, automatically unlock the next video
-        if (currentVideo < videos.length - 1) {
-          maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
-          saveProgress();
-        }
-      }
-      updateSidebarActive();
-    }
-    
-    function checkAnswer() {
-      if (!videos[currentVideo].isQuiz) return;
-      if (videos[currentVideo].solved) return; // Already solved, do nothing
-
-      const userAnswer = document.getElementById('answerInput').value.toLowerCase().trim();
-      const correctAnswer = videos[currentVideo].answer;
-      const feedback = document.getElementById('feedback');
-      videos[currentVideo].tries++;
-      
-      const quizStartTime = startTime;
-      const quizEndTime = Date.now();
-      const quizTimeSeconds = Math.floor((quizEndTime - quizStartTime) / 1000);
-      
-      if (userAnswer === correctAnswer) {
-        feedback.textContent = "Correct!";
-        feedback.style.color = "green";
-        totalTries += videos[currentVideo].tries;
-        totalTime += (quizEndTime - quizStartTime);
-        
-        // Lock the question status permanently
-        videos[currentVideo].solved = true;
-
-        if (currentVideo < videos.length - 1) {
-          maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
-        }
-        
-        // Check for achievements
-        if (!achievements.find(a => a.id === 'first_quiz').unlocked) {
-          unlockAchievement('first_quiz');
-        }
-        
-        if (videos[currentVideo].tries === 1) {
-          // Check for perfect score achievement
-          unlockAchievement('perfect_score');
-        }
-        
-        if (quizTimeSeconds < 30) {
-          // Check for fast learner achievement
-          unlockAchievement('fast_learner');
-        }
-        
-        setTimeout(() => {
-          feedback.textContent = "";
-          goToNextVideo();
-        }, 1500);
       } else {
-        feedback.textContent = "Incorrect, try again.";
-        feedback.style.color = "red";
-        document.getElementById('answerInput').value = '';
+        // Not solved; display quiz question
+        document.querySelector('.quiz-section').style.display = 'block';
+        document.getElementById('nonQuizSection').style.display = 'none';
+        document.getElementById('question').textContent = videos[currentVideo].question;
         document.getElementById('answerInput').focus();
       }
-      saveProgress(); // Save progress after checkAnswer
-      updateProgress(); // Update progress bar after answer check
-    }
-    
-    function goToNextVideo() {
-      if (currentVideo < videos.length - 1) {
-        if (currentVideo + 1 > maxUnlocked) {
-          showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
-          return;
-        }
-        currentVideo++;
-        startTime = Date.now();
-        initialize();
-      } else {
-        endQuiz();
-      }
-    }
-    
-    function endQuiz() {
-      const totalSeconds = Math.floor(totalTime / 1000);
-      const score = calculateScore(totalSeconds, totalTries);
+    } else {
       document.querySelector('.quiz-section').style.display = 'none';
-      document.getElementById('nonQuizSection').style.display = 'none';
-      
-      document.getElementById('score').innerHTML = `
-        <h2>Quiz Complete! 🏆</h2>
-        <p>⏱ Time: ${totalSeconds} seconds</p>
-        <p>🎯 Total Attempts: ${totalTries}</p>
-        <p style="font-size:1.8em; margin-top:15px;">⭐ Final Score: ${score}</p>
-        <div style="margin-top:20px;">
-          <input type="text" id="playerNameInput" placeholder="Enter your name" style="padding:10px; margin-right:10px;">
-          <button onclick="submitPlayerScore()">Submit to Leaderboard</button>
-        </div>
-      `;
-      
-      saveProgress();
-      updateProgress(); // Make sure progress shows 100% on completion
-    }
-
-    // Add this new function to handle score submission
-    function submitPlayerScore() {
-      if (hasSubmittedScore) {
-        showNotification('⚠️', 'Already Submitted', 'You have already submitted your score to the leaderboard.');
-        return;
-      }
-
-      const playerName = document.getElementById('playerNameInput').value.trim();
-      if (!playerName) {
-        showNotification('⚠️', 'Name Required', 'Please enter your name to submit your score.');
-        return;
-      }
-
-      const totalSeconds = Math.floor(totalTime / 1000);
-      const score = calculateScore(totalSeconds, totalTries);
-
-      submitScore(playerName, score);
-
-      // Disable the input and button after submission
-      document.getElementById('playerNameInput').disabled = true;
-      document.getElementById('playerNameInput').nextElementSibling.disabled = true;
-      document.getElementById('playerNameInput').nextElementSibling.textContent = 'Score Submitted!';
-    }
-    
-    function updateSidebarActive() {
-      const items = document.querySelectorAll('.sidebar li');
-      items.forEach((item, i) => {
-        // Store the original text without icons if not already stored
-        if (!item.dataset.title) {
-          item.dataset.title = item.textContent;
-        }
-        
-        const original = item.dataset.title;
-        let icon = "";
-        const vidIndex = sidebarMapping[i];
-        
-        // Check if this video is solved
-        if (vidIndex < videos.length && videos[vidIndex] && videos[vidIndex].isQuiz && videos[vidIndex].solved) {
-          icon = videos[vidIndex].tries === 1 ? " ⭐" : " ✓";
-        }
-        
-        item.textContent = original + icon;
-        item.classList.toggle('active', vidIndex === currentVideo);
-        
-        if (vidIndex > maxUnlocked) {
-          item.classList.add('locked');
-          item.onclick = () => {
-            showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
-          };
-        } else {
-          item.classList.remove('locked');
-          item.onclick = () => loadVideo(vidIndex);
-        }
-      });
-    }
-    
-    function backButton() {
-      if (currentVideo > 0) {
-        currentVideo--;
-        startTime = Date.now();
-        initialize();
+      document.getElementById('nonQuizSection').style.display = 'block';
+      // For non-quiz videos, automatically unlock the next video
+      if (currentVideo < videos.length - 1) {
+        maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
         saveProgress();
+      }
+    }
+    updateSidebarActive();
+  }
+  
+  function checkAnswer() {
+    if (!videos[currentVideo].isQuiz) return;
+    if (videos[currentVideo].solved) return;
+
+    const userAnswer = normalizeAnswer(document.getElementById('answerInput').value);
+    const correctAnswer = normalizeAnswer(videos[currentVideo].answer);
+    const feedback = document.getElementById('feedback');
+    videos[currentVideo].tries++;
+
+    const quizStartTime = startTime;
+    const quizEndTime = Date.now();
+    const quizTimeSeconds = Math.floor((quizEndTime - quizStartTime) / 1000);
+    
+    if (userAnswer === correctAnswer) {
+      feedback.textContent = "Correct!";
+      feedback.style.color = "green";
+      totalTries += videos[currentVideo].tries;
+      totalTime += (quizEndTime - quizStartTime);
+      
+      videos[currentVideo].solved = true;
+      if (currentVideo < videos.length - 1) {
+        maxUnlocked = Math.max(maxUnlocked, currentVideo + 1);
+      }
+      
+      // Achievement checks...
+      
+      setTimeout(() => {
+        feedback.textContent = "";
+        goToNextVideo();
+      }, 1500);
+    } else {
+      feedback.textContent = "Incorrect, try again.";
+      feedback.style.color = "red";
+      document.getElementById('answerInput').value = '';
+      document.getElementById('answerInput').focus();
+    }
+    saveProgress();
+    updateProgress();
+  }
+  
+  function goToNextVideo() {
+    if (currentVideo < videos.length - 1) {
+      if (currentVideo + 1 > maxUnlocked) {
+        showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
+        return;
+      }
+      currentVideo++;
+      startTime = Date.now();
+      initialize();
+    } else {
+      endQuiz();
+    }
+  }
+  
+  function endQuiz() {
+    const totalSeconds = Math.floor(totalTime / 1000);
+    const score = calculateScore(totalSeconds, totalTries);
+    document.querySelector('.quiz-section').style.display = 'none';
+    document.getElementById('nonQuizSection').style.display = 'none';
+    
+    document.getElementById('score').innerHTML = `
+      <h2>Quiz Complete! 🏆</h2>
+      <p>⏱ Time: ${totalSeconds} seconds</p>
+      <p>🎯 Total Attempts: ${totalTries}</p>
+      <p style="font-size:1.8em; margin-top:15px;">⭐ Final Score: ${score}</p>
+      <div style="margin-top:20px;">
+        <input type="text" id="playerNameInput" placeholder="Enter your name" style="padding:10px; margin-right:10px;">
+        <button onclick="submitPlayerScore()">Submit to Leaderboard</button>
+      </div>
+    `;
+    
+    saveProgress();
+    updateProgress(); // Make sure progress shows 100% on completion
+  }
+
+  // Add this new function to handle score submission
+  function submitPlayerScore() {
+    if (hasSubmittedScore) {
+      showNotification('⚠️', 'Already Submitted', 'You have already submitted your score to the leaderboard.');
+      return;
+    }
+
+    const playerName = document.getElementById('playerNameInput').value.trim();
+    if (!playerName) {
+      showNotification('⚠️', 'Name Required', 'Please enter your name to submit your score.');
+      return;
+    }
+
+    const totalSeconds = Math.floor(totalTime / 1000);
+    const score = calculateScore(totalSeconds, totalTries);
+
+    submitScore(playerName, score);
+
+    // Disable the input and button after submission
+    document.getElementById('playerNameInput').disabled = true;
+    document.getElementById('playerNameInput').nextElementSibling.disabled = true;
+    document.getElementById('playerNameInput').nextElementSibling.textContent = 'Score Submitted!';
+  }
+  
+  function updateSidebarActive() {
+    const items = document.querySelectorAll('.sidebar li');
+    items.forEach((item, i) => {
+      // Store the original text without icons if not already stored
+      if (!item.dataset.title) {
+        item.dataset.title = item.textContent;
+      }
+      
+      const original = item.dataset.title;
+      let icon = "";
+      const vidIndex = sidebarMapping[i];
+      
+      // Check if this video is solved
+      if (vidIndex < videos.length && videos[vidIndex] && videos[vidIndex].isQuiz && videos[vidIndex].solved) {
+        icon = videos[vidIndex].tries === 1 ? " ⭐" : " ✓";
+      }
+      
+      item.textContent = original + icon;
+      item.classList.toggle('active', vidIndex === currentVideo);
+      
+      if (vidIndex > maxUnlocked) {
+        item.classList.add('locked');
+        item.onclick = () => {
+          showNotification('🔒', 'Locked Content', 'Please complete the previous section first.');
+        };
       } else {
-        showNotification('⚠️', 'Navigation Error', 'No previous video available.');
+        item.classList.remove('locked');
+        item.onclick = () => loadVideo(vidIndex);
       }
+    });
+  }
+  
+  function backButton() {
+    if (currentVideo > 0) {
+      currentVideo--;
+      startTime = Date.now();
+      initialize();
+      saveProgress();
+    } else {
+      showNotification('⚠️', 'Navigation Error', 'No previous video available.');
     }
-    
-    function forwardButton() {
-      goToNextVideo();
+  }
+  
+  function forwardButton() {
+    goToNextVideo();
+  }
+  
+  document.getElementById('answerInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      checkAnswer();
     }
-    
-    document.getElementById('answerInput').addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
+  });
+  
+  document.addEventListener('keydown', function(event) {
+    if (document.activeElement.id !== 'answerInput') {
+      if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        checkAnswer();
+        backButton();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        forwardButton();
       }
-    });
-    
-    document.addEventListener('keydown', function(event) {
-      if (document.activeElement.id !== 'answerInput') {
-        if (event.key === 'ArrowLeft') {
-          event.preventDefault();
-          backButton();
-        } else if (event.key === 'ArrowRight') {
-          event.preventDefault();
-          forwardButton();
-        }
+    }
+  });
+
+  // Global Leaderboard: Load leaderboard data with improved security and error handling
+  function loadLeaderboard(timeFrame = 'allTime') {
+    const leaderboardList = document.getElementById('leaderboardList');
+    const loadingElement = document.getElementById('leaderboardLoading');
+    const errorElement = document.getElementById('leaderboardError');
+
+    // Show loading state
+    leaderboardList.innerHTML = '';
+    loadingElement.style.display = 'block';
+    errorElement.style.display = 'none';
+
+    // Update the URL to point to your leaderboard.json file on GitHub
+    // Using a versioned URL is more secure than using 'main' branch
+    const url = 'https://leaderboard-backend-sigma.vercel.app/api/leaderboard?timeFrame=' + timeFrame;
+
+    fetch(url, { 
+      cache: 'no-store',  // Don't cache results to always get fresh data
+      headers: {
+        'Accept': 'application/json'
       }
-    });
-
-    function loadLeaderboard(timeFrame = 'allTime') {
-      const leaderboardList = document.getElementById('leaderboardList');
-      const loadingElement = document.getElementById('leaderboardLoading');
-      const errorElement = document.getElementById('leaderboardError');
-  
-      // Show loading state
-      leaderboardList.innerHTML = '';
-      loadingElement.style.display = 'block';
-      errorElement.style.display = 'none';
-
-      const url = 'https://leaderboard-backend-sigma.vercel.app/api/leaderboard?timeFrame=' + timeFrame;
-  
-      fetch(url, { 
-        cache: 'no-store',  // Don't cache results to always get fresh data
-        headers: {
-          'Accept': 'application/json'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Network error: ${response.status} ${response.statusText}`);
         }
+        return response.json();
       })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Network error: ${response.status} ${response.statusText}`);
+      .then(data => {
+        try {
+          // Validate data structure
+          if (!Array.isArray(data.leaderboard?.contributors)) {
+            throw new Error('Invalid leaderboard data format');
           }
-          return response.json();
-        })
-        .then(data => {
-          try {
-            // Validate data structure
-            if (!Array.isArray(data.leaderboard?.contributors)) {
-              throw new Error('Invalid leaderboard data format');
-            }
-  
-            // Filter data based on timeFrame if needed
-            let filteredData = [...data.leaderboard.contributors];
-  
-            if (timeFrame === 'weekly') {
-              // Filter for entries within the last 7 days
-              const oneWeekAgo = new Date();
-              oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  
-              // This assumes your data has a 'date' field
-              // If not, you'll need to adjust this logic
-              filteredData = filteredData.filter(entry => {
-                if (!entry.date) return true; // Include entries without dates for now
-                return new Date(entry.date) >= oneWeekAgo;
-              });
-            }
-  
-            // Sort entries in descending order (highest score first)
-            filteredData.sort((a, b) => b.score - a.score);
-  
-            // Hide loading state
-            loadingElement.style.display = 'none';
-  
-            // Display the leaderboard
-            if (filteredData.length === 0) {
-              leaderboardList.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data available for this time period</td></tr>';
-              return;
-            }
-  
-            filteredData.forEach((entry, index) => {
-              const rank = index + 1;
-              const tr = document.createElement('tr');
-  
-              // Rank column with badge
-              const rankTd = document.createElement('td');
-              const rankBadge = document.createElement('div');
-              rankBadge.className = `rank-badge rank-${rank <= 3 ? rank : 'other'}`;
-              rankBadge.textContent = rank;
-              rankTd.appendChild(rankBadge);
-  
-              // Player column with avatar
-              const playerTd = document.createElement('td');
-              const playerInfo = document.createElement('div');
-              playerInfo.className = 'player-info';
-  
-              const avatar = document.createElement('img');
-              avatar.className = 'player-avatar';
-              avatar.src = entry.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(entry.username)}&background=random`;
-              avatar.alt = entry.username;
-  
-              const playerName = document.createElement('span');
-              playerName.textContent = entry.username;
-  
-              playerInfo.appendChild(avatar);
-              playerInfo.appendChild(playerName);
-              playerTd.appendChild(playerInfo);
-  
-              // Score column
-              const scoreTd = document.createElement('td');
-              scoreTd.textContent = entry.score.toLocaleString();
-  
-              tr.appendChild(rankTd);
-              tr.appendChild(playerTd);
-              tr.appendChild(scoreTd);
-  
-              leaderboardList.appendChild(tr);
+
+          // Filter data based on timeFrame if needed
+          let filteredData = [...data.leaderboard.contributors];
+
+          if (timeFrame === 'weekly') {
+            // Filter for entries within the last 7 days
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            // This assumes your data has a 'date' field
+            // If not, you'll need to adjust this logic
+            filteredData = filteredData.filter(entry => {
+              if (!entry.date) return true; // Include entries without dates for now
+              return new Date(entry.date) >= oneWeekAgo;
             });
-          } catch (error) {
-            console.error('Error processing leaderboard data:', error);
-            errorElement.textContent = 'Error processing leaderboard data. Please try again later.';
-            errorElement.style.display = 'block';
-            loadingElement.style.display = 'none';
           }
-        })
-        .catch(error => {
-          console.error('Error loading leaderboard:', error);
-          errorElement.textContent = 'Error loading leaderboard. Please try again later.';
+
+          // Sort entries in descending order (highest score first)
+          filteredData.sort((a, b) => b.score - a.score);
+
+          // Hide loading state
+          loadingElement.style.display = 'none';
+
+          // Display the leaderboard
+          if (filteredData.length === 0) {
+            leaderboardList.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data available for this time period</td></tr>';
+            return;
+          }
+
+          filteredData.forEach((entry, index) => {
+            const rank = index + 1;
+            const tr = document.createElement('tr');
+
+            // Rank column with badge
+            const rankTd = document.createElement('td');
+            const rankBadge = document.createElement('div');
+            rankBadge.className = `rank-badge rank-${rank <= 3 ? rank : 'other'}`;
+            rankBadge.textContent = rank;
+            rankTd.appendChild(rankBadge);
+
+            // Player column with avatar
+            const playerTd = document.createElement('td');
+            const playerInfo = document.createElement('div');
+            playerInfo.className = 'player-info';
+
+            const avatar = document.createElement('img');
+            avatar.className = 'player-avatar';
+            avatar.src = entry.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(entry.username)}&background=random`;
+            avatar.alt = entry.username;
+
+            const playerName = document.createElement('span');
+            playerName.textContent = entry.username;
+
+            playerInfo.appendChild(avatar);
+            playerInfo.appendChild(playerName);
+            playerTd.appendChild(playerInfo);
+
+            // Score column
+            const scoreTd = document.createElement('td');
+            scoreTd.textContent = entry.score.toLocaleString();
+
+            tr.appendChild(rankTd);
+            tr.appendChild(playerTd);
+            tr.appendChild(scoreTd);
+
+            leaderboardList.appendChild(tr);
+          });
+        } catch (error) {
+          console.error('Error processing leaderboard data:', error);
+          errorElement.textContent = 'Error processing leaderboard data. Please try again later.';
           errorElement.style.display = 'block';
           loadingElement.style.display = 'none';
-        });
-    }
-  
-    // Function to switch between leaderboard tabs
-    function switchLeaderboardTab(tab) {
-      // Update active tab styling
-      document.getElementById('allTimeTab').classList.toggle('active', tab === 'allTime');
-      document.getElementById('weeklyTab').classList.toggle('active', tab === 'weekly');
-  
-      // Load the appropriate leaderboard data
-      loadLeaderboard(tab);
-    }
-  
-    loadProgress();
-    initialize();
-    loadLeaderboard();
-  </script>
+        }
+      })
+      .catch(error => {
+        console.error('Error loading leaderboard:', error);
+        errorElement.textContent = 'Error loading leaderboard. Please try again later.';
+        errorElement.style.display = 'block';
+        loadingElement.style.display = 'none';
+      });
+  }
+
+  // Function to switch between leaderboard tabs
+  function switchLeaderboardTab(tab) {
+    // Update active tab styling
+    document.getElementById('allTimeTab').classList.toggle('active', tab === 'allTime');
+    document.getElementById('weeklyTab').classList.toggle('active', tab === 'weekly');
+
+    // Load the appropriate leaderboard data
+    loadLeaderboard(tab);
+  }
+
+  loadProgress();
+  initialize();
+  loadLeaderboard();
+</script>
 </body>
 </html>
