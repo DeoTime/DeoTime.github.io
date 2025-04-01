@@ -1033,7 +1033,6 @@ body.dark .balance-game-description {
   height: 100%;
   background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
   z-index: 1;
-  animation: scrollBackground 120s linear infinite;
 }
 
 body.dark .mountain-background {
@@ -1459,7 +1458,7 @@ body.dark .balance-input:focus {
     <h2 class="balance-game-title">Try This! (Everyone)</h2>
     <p class="balance-game-description">
       Two engineers are struggling to balance the weight of this stop sign. On one side, the weight is
-      (3x⁻²+5x⁰-7).On the other, the weight is (1/x² + 4 - x⁰). What's the missing
+      (x⁻²+5x⁰-7).On the other, the weight is (1/x² + 4 - x⁰). What's the missing
       term we must add to make the two weights equal?
     </p>
     
@@ -1477,7 +1476,7 @@ body.dark .balance-input:focus {
           <div class="balance-beam" id="balanceBeam">
             <div class="balance-plate balance-plate-left"></div>
             <div class="balance-plate balance-plate-right"></div>
-            <div class="balance-weight balance-weight-left">3x<sup>-2</sup> + 5x<sup>0</sup> - 7</div>
+            <div class="balance-weight balance-weight-left">x<sup>-2</sup> + 5x<sup>0</sup> - 7</div>
             <div class="balance-weight balance-weight-right">
               1/x<sup>2</sup> + 4 - x<sup>0</sup> + <span id="missingTerm">_____</span>
             </div>
@@ -1851,9 +1850,8 @@ const videos = [
   { id: 'INTRO4', isQuiz: false },
   { id: 'INTRO5', isQuiz: false },
   { id: 'INTRO6', isQuiz: false },
-  { id: 'POP2', isQuiz: false },
-  { id: 'BALANCE_GAME', question: 'Find the missing term to balance the equation.', answer: '-3', tries: 0, isQuiz: true, isBalanceGame: true },
-  { id: 'FINAL_QUIZ', question: 'Apply all exponent laws to simplify the above \n Note: Write your answer in the following syntax: (n^m)/(a^b)', answer: '(-27y^12)/(2x^6)', tries: 0, isQuiz: true, isImage: true }
+  { id: 'BALANCE_GAME', question: 'Find the missing term to balance the equation.', answer: '-5', tries: 0, isQuiz: true, isBalanceGame: true },
+  { id: 'FINAL_QUIZ', question: 'Apply all exponent laws to simplify the above || \n Note: Write your answer in the following syntax: (n^m)/(a^b)', answer: '(-27y^12)/(2x^6)', tries: 0, isQuiz: true, isImage: true }
 ];
 
 const sidebarMapping = [0, 1, 2, 3, 4, 5, 6, 7, 9, 10];
